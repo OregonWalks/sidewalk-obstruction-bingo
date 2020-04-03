@@ -1,0 +1,4 @@
+# NextJS caches
+.next
+
+node_modules
