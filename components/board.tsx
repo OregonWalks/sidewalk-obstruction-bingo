@@ -28,7 +28,7 @@ export default function Board() {
       <tr key={row}>
         {[0, 1, 2, 3, 4].map(col => {
           let flatIndex = row * 5 + col;
-          return <Tile key={col} tile={tileorder[flatIndex]}
+          return <Tile key={col} tileid={tileorder[flatIndex]}
             matched={matched[flatIndex]}
             onToggleMatched={() => setMatched(toggleMatched(flatIndex))}></Tile>
         })}
