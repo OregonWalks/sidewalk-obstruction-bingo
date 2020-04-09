@@ -1,19 +1,39 @@
-import { get, set } from 'idb-keyval';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
 import Tile from "./tile"
+import { initializeTilesAndMatched, toggleMatched } from "../services/tile-storage";
 
-export default class Board extends React.Component<{ tileorder: Array<number>; matched: Array<boolean> }>{
+export default function Board() {
+  let [tileorder, setTileorder] = useState(null);
+  let [matched, setMatched] = useState(null);
+  console.log("tileorder", tileorder);
+  console.log("matched", matched);
 
-  render() {
-    return <tbody>
-      {[0, 1, 2, 3, 4].map(row =>
-        <tr key={row}>
-          {[0, 1, 2, 3, 4].map(col => {
-            let flatIndex = row * 5 + col;
-            return <Tile key={col} tile={this.props.tileorder[flatIndex]} matched={this.props.matched[flatIndex]}></Tile>
-          })}
-        </tr>
-      )}
-    </tbody>;
+  useEffect(() => {
+    (async () => {
+      if (tileorder === null) {
+        let { tileorder, matched } = await initializeTilesAndMatched();
+        setTileorder(tileorder);
+        setMatched(matched);
+      }
+    })()
+  });
+
+  if (tileorder === null || matched === null) {
+    return <tbody><tr><td>Loading...</td></tr></tbody>;
   }
-};
+
+  return <tbody>
+    {[0, 1, 2, 3, 4].map(row =>
+      <tr key={row}>
+        {[0, 1, 2, 3, 4].map(col => {
+          let flatIndex = row * 5 + col;
+          return <Tile key={col} tile={tileorder[flatIndex]}
+            matched={matched[flatIndex]}
+            onToggleMatched={() => setMatched(toggleMatched(flatIndex))}></Tile>
+        })}
+      </tr>
+    )}
+  </tbody>;
+}
+;
