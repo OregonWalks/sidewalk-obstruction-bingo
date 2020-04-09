@@ -146,8 +146,8 @@ export default function Tile(props: { tileid: number, matched: boolean, onToggle
       width="150" height="150"
       style={{
         position: "absolute", left: 0, top: 0,
-        objectFit: "cover",
-        maxWidth: "100%", maxHeight: "100%",
+        objectFit: "contain",
+        width: "100%", height: "100%",
       }} />;
   }
 
@@ -155,8 +155,8 @@ export default function Tile(props: { tileid: number, matched: boolean, onToggle
     <img alt={tile.alt} src={"/tiles/" + tile.image}
       width="150" height="150"
       style={{
-        objectFit: "cover",
-        maxWidth: "100%", maxHeight: "100%",
+        objectFit: "contain",
+        width: "100%", height: "100%",
       }} />
     {drawMatched}
   </td>;
