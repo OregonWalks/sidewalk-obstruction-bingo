@@ -4,7 +4,7 @@ function makeCountingArray(length: number) {
   return Array.from({ length }, (_, index) => index);
 }
 
-// Returns a random integer in [0, max).
+/** Returns a random integer in [0, max). */
 function getRandomNaturalUpTo(max: number) {
   return Math.floor(Math.random() * (max + 1));
 }
@@ -20,15 +20,7 @@ function randomShuffle(arr: Array<any>) {
 export async function initializeTilesAndMatched(): Promise<{ tileorder: number[], matched: boolean[] }> {
   let [tileorder, matched] = await Promise.all([get("tileorder"), get("matched")]) as [number[], boolean[]];
   if (tileorder === undefined) {
-    // Array from 1..24, inclusive.
-    tileorder = Array.from({ length: 24 }, (_, index) => index + 1);
-    randomShuffle(tileorder);
-    // Tile 0 is the free tile; insert it at index 12, the middle of the array.
-    tileorder.splice(12, 0, 0);
-
-    matched = Array(25).fill(false);
-    matched[12] = true;
-    await Promise.all([set("tileorder", tileorder), set("matched", matched)]);
+    return generateANewBoard();
   }
   return { tileorder, matched };
 }
@@ -40,4 +32,17 @@ export function toggleMatched(tileIndex: number) {
     set("matched", newMatched); // We're not waiting for the async effect.
     return newMatched;
   }
+}
+
+export async function generateANewBoard(): Promise<{ tileorder: number[], matched: boolean[] }> {
+  // Array from 1..24, inclusive.
+  let tileorder = Array.from({ length: 24 }, (_, index) => index + 1);
+  randomShuffle(tileorder);
+  // Tile 0 is the free tile; insert it at index 12, the middle of the array.
+  tileorder.splice(12, 0, 0);
+
+  let matched = Array(25).fill(false);
+  matched[12] = true;
+  await Promise.all([set("tileorder", tileorder), set("matched", matched)]);
+  return { tileorder, matched };
 }

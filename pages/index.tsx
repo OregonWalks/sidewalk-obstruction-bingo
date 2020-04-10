@@ -11,9 +11,9 @@ export default function Index() {
     justifyContent: "space-between safe",
   }}>
     <h1 style={{ flex: "0 auto" }}>Sidewalk Obstruction Bingo</h1>
-    <table style={{ flex: "1 auto", height: "100%" }}>
+    <div>
       <Board />
-    </table>
+    </div>
     <div>
       <h2>How to Report</h2>
       
