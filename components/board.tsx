@@ -22,33 +22,35 @@ export default function Board() {
     return <h1>Loading...</h1>;
   }
 
-  let won = wonBingo(matched);
-
-  if (won) {
-    async function generateANewBoardAndUpdateState() {
-      let { tileorder, matched } = await generateANewBoard();
-      setTileorder(tileorder);
-      setMatched(matched);
-    }
-    return <div>
-      <h1>You won!</h1>
-      <button onClick={generateANewBoardAndUpdateState}>Generate a new board</button>
-    </div>;
+  async function generateANewBoardAndUpdateState() {
+    let { tileorder, matched } = await generateANewBoard();
+    setTileorder(tileorder);
+    setMatched(matched);
   }
 
-  return <table style={{ flex: "1 auto", height: "90%" }}>
-    <tbody>
-      {[0, 1, 2, 3, 4].map(row =>
-        <tr key={row}>
-          {[0, 1, 2, 3, 4].map(col => {
-            let flatIndex = row * 5 + col;
-            return <Tile key={col} tileid={tileorder[flatIndex]}
-              matched={matched[flatIndex]}
-              onToggleMatched={() => setMatched(toggleMatched(flatIndex))}></Tile>
-          })}
-        </tr>
-      )}
-    </tbody>
-  </table>;
+  let board: JSX.Element;
+  if (wonBingo(matched)) {
+    board = <h1>You won!</h1>;
+  } else {
+    board = <table style={{ flex: "1 auto", height: "90%" }}>
+      <tbody>
+        {[0, 1, 2, 3, 4].map(row =>
+          <tr key={row}>
+            {[0, 1, 2, 3, 4].map(col => {
+              let flatIndex = row * 5 + col;
+              return <Tile key={col} tileid={tileorder[flatIndex]}
+                matched={matched[flatIndex]}
+                onToggleMatched={() => setMatched(toggleMatched(flatIndex))}></Tile>
+            })}
+          </tr>
+        )}
+      </tbody>
+    </table>;
+  }
+
+  return <>
+    {board}
+    <button onClick={generateANewBoardAndUpdateState}>Generate a new board</button>
+  </>;
 }
 ;
