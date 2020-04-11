@@ -1,1 +1,19 @@
 html, body, #__next, main {height:100%}
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+h1, h2, h3, h4 {
+    font-family: "Montserrat", sans-serif;
+}
+
+p {
+    font-family: "Roboto Slab", serif;
+    font-size: 18px;
+    font-weight: 300;
+}
+
+a {
+    color: #0073bb;
+    text-decoration: none;
+}
