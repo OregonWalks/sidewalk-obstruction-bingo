@@ -2182,12 +2182,12 @@
 			v7.652h-1.723v-7.578c0-0.915-0.078-1.584-0.234-2.007c-0.156-0.422-0.4-0.748-0.732-0.979c-0.332-0.231-0.717-0.347-1.154-0.347
 			c-0.828,0-1.488,0.31-1.98,0.927c-0.492,0.618-0.738,1.678-0.738,3.18v6.804H936.727z"/>
 	</g>
-	<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="32.5737" y1="32.5732" x2="117.4265" y2="117.4261">
+	<radialGradient id="SVGID_1_" cx="75" cy="75" r="60" gradientUnits="userSpaceOnUse">
 		<stop  offset="0" style="stop-color:#F4C823;stop-opacity:0.5"/>
-		<stop  offset="0.5172" style="stop-color:#F6C720;stop-opacity:0.7586"/>
-		<stop  offset="0.9321" style="stop-color:#FCC214;stop-opacity:0.966"/>
-		<stop  offset="1" style="stop-color:#FEC111"/>
-	</linearGradient>
+		<stop  offset="0.5172" style="stop-color:#F6C720;stop-opacity:0.6293"/>
+		<stop  offset="0.9321" style="stop-color:#FCC214;stop-opacity:0.733"/>
+		<stop  offset="1" style="stop-color:#FEC111;stop-opacity:0.75"/>
+	</radialGradient>
 	<circle fill="url(#SVGID_1_)" stroke="#FEC111" cx="75" cy="75" r="60"/>
 </g>
 </svg>
