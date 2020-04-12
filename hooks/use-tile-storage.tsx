@@ -19,10 +19,13 @@ function randomShuffle(arr: Array<any>) {
   }
 }
 
+/**
+ * Returns null values before idb-keyval has been read for the first time.
+ */
 export default function useTileStorage(): {
   tileorder: number[],
   matched: boolean[],
-  toggleMatched: (index) => void,
+  toggleMatched: (index: number) => void,
   newBoard: () => void
 } {
   let [tileorder, setTileorder] = useIdbKeyval<number[]>("tileorder", null);
@@ -47,12 +50,14 @@ export default function useTileStorage(): {
     setMatched(matched);
   }, [setTileorder, setMatched]);
 
-  if (tileorder === null) {
+  if (tileorder === undefined) {
     newBoard();
-  }
-  if (matched === null) {
-    // Make sure they both go non-null in the same render.
     tileorder = null;
+  }
+  if (matched === undefined) {
+    // Make sure they both get defined in the same render.
+    tileorder = null;
+    matched = null;
   }
 
   return { tileorder, matched, toggleMatched, newBoard };
