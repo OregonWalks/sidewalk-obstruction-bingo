@@ -1,33 +1,16 @@
 import React, { useState, useEffect } from 'react';
 
 import Tile from "./tile"
-import { initializeTilesAndMatched, toggleMatched, generateANewBoard } from "../services/tile-storage";
+import useTileStorage from "../hooks/use-tile-storage";
 import { wonBingo } from "../services/bingo";
 import Button from 'react-bootstrap/Button'
 
 
 export default function Board() {
-  let [tileorder, setTileorder] = useState(null);
-  let [matched, setMatched] = useState(null);
-
-  useEffect(() => {
-    (async () => {
-      if (tileorder === null) {
-        let { tileorder, matched } = await initializeTilesAndMatched();
-        setTileorder(tileorder);
-        setMatched(matched);
-      }
-    })()
-  });
+  let { tileorder, matched, toggleMatched, newBoard } = useTileStorage();
 
   if (tileorder === null || matched === null) {
     return <h1>Loading...</h1>;
-  }
-
-  async function generateANewBoardAndUpdateState() {
-    let { tileorder, matched } = await generateANewBoard();
-    setTileorder(tileorder);
-    setMatched(matched);
   }
 
   let board: JSX.Element;
@@ -42,7 +25,7 @@ export default function Board() {
               let flatIndex = row * 5 + col;
               return <Tile key={col} tileid={tileorder[flatIndex]}
                 matched={matched[flatIndex]}
-                onToggleMatched={() => setMatched(toggleMatched(flatIndex))}></Tile>
+                onToggleMatched={() => toggleMatched(flatIndex)}></Tile>
             })}
           </tr>
         )}
@@ -52,7 +35,7 @@ export default function Board() {
 
   return <>
     {board}
-    <Button variant="primary" block onClick={generateANewBoardAndUpdateState}>Generate a new board</Button>
+    <Button variant="primary" block onClick={newBoard}>Generate a new board</Button>
   </>;
 }
 ;
