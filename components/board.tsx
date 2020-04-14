@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import Tile from "./tile"
 import { initializeTilesAndMatched, toggleMatched, generateANewBoard } from "../services/tile-storage";
 import { wonBingo } from "../services/bingo";
+import Button from 'react-bootstrap/Button'
+
 
 export default function Board() {
   let [tileorder, setTileorder] = useState(null);
@@ -50,7 +52,7 @@ export default function Board() {
 
   return <>
     {board}
-    <button onClick={generateANewBoardAndUpdateState}>Generate a new board</button>
+    <Button variant="primary" block onClick={generateANewBoardAndUpdateState}>Generate a new board</Button>
   </>;
 }
 ;

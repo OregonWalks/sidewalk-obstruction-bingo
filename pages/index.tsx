@@ -14,12 +14,14 @@ export default function Index() {
     flexDirection: "column",
     justifyContent: "space-between safe",
   }}>
-    <h1 style={{ flex: "0 auto" }}><u>S</u>idewalk <u>O</u>bstruction <u>B</u>ingo (&#128557; SOB &#128557;)</h1>
+    <div>
+      <img src="/banner.svg"></img>
+    </div>
     
     <Accordion>
       <Card>
         <Card.Header>
-          <Accordion.Toggle as={Button} variant="warning" eventKey="0" block>
+          <Accordion.Toggle as={Button} variant="primary" eventKey="0" block>
             How to Play
           </Accordion.Toggle>
         </Card.Header>
@@ -35,7 +37,7 @@ export default function Index() {
       </Card>
       <Card>
         <Card.Header>
-          <Accordion.Toggle as={Button} variant="warning" eventKey="1" block>
+          <Accordion.Toggle as={Button} variant="primary" eventKey="1" block>
             Report a Sidewalk Obstruction
           </Accordion.Toggle>
         </Card.Header>
@@ -69,55 +71,9 @@ export default function Index() {
       </Card>
     </Accordion>
 
-   
-    
     <div>
       <Board />
     </div>
     
-   
-      
-
-
-      
-{/*       <h3>Broken Sidewalk</h3>
-      <p><a href="tel:503-823-1711">503-823-1711</a>{' or '}
-      <a href="https://pdxreporter.org/">pdxreporter.org</a></p>
-
-      <h3>Illegal Parking</h3>
-      <p><a href="tel:503-823-5195">503-823-5195</a>{' or '}
-      <a href="https://pdxreporter.org/">pdxreporter.org</a></p>
-            
-      <h3>Overgrown Vegetation</h3>
-      <p>{'If vegetation is in the public right-of-way, contact Urban Forestry: '}
-      <a href="tel:503-823-4489">503-823-4489</a>{' or '}
-      <a href="https://pdxreporter.org/">pdxreporter.org</a></p>
-
-      <h3>Work Zone Concern</h3>
-      <p><a href="tel:503-823-7233">503-823-SAFE</a>{' or '}
-      <a href="https://pdxreporter.org/">pdxreporter.org</a></p>
-      
-      <h3>Street Lighting</h3>
-      <p><a href="tel:503-865-5267">503-865-5267</a>{' or '}
-      <a href="https://pdxreporter.org/">pdxreporter.org</a></p>
-
-      <h3>A-Frame Blocking Sidewalk</h3>
-      <p><a href="tel:503-823-1711">503-823-1711</a>{' or '}
-      <a href="https://pdxreporter.org/">pdxreporter.org</a></p>
-
-      <h3>Scooter in Walkway</h3>
-      <p>{"Contact the e-scooter company directly using information on the scooter, or find contact information on the City's "}
-      <a href="https://www.portlandoregon.gov/transportation/79174">E-Scooter Reporting and Feedback</a> {' page.'}
-      </p>
-
-      <h3>Refuse Bins in the Right-of-Way</h3>
-      <p><a href="tel:503-823-7202">503-823-7202</a>{' or '} 
-      <a href="https://pdxreporter.org/">pdxreporter.org</a></p>
-
-      <h3>Other Issues</h3>
-      <p>{'For all other issues, use the "other" section of '}
-      <a href="https://pdxreporter.org/">pdxreporter.org</a></p> */}
-
-
   </main>;
 };
