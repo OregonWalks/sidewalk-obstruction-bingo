@@ -126,7 +126,7 @@ const TILES: Tile[] = [
   },
   {
     id: 18,
-    image: "shrubber_half.svg",
+    image: "shrubbery_half.svg",
     alt: "Shrubbery across at least ½ of the sidewalk",
   },
   {
