@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 export interface Tile {
   id: number;
@@ -9,19 +9,19 @@ export interface Tile {
   //** idb-keyval key to store extra data used by the tile. */
   idbKey?: string;
   /** React component to ask the user for more detail about why they marked this tile. */
-  describe?: (props: object) => JSX.Element,
+  describe?: (props: object) => JSX.Element;
   /** React component to render the user's answer over the main tile. */
-  show?: (props: object) => JSX.Element,
-};
+  show?: (props: object) => JSX.Element;
+}
 
-function DescribeAddYourOwn(props: { value: string; onChange: (newValue: string) => void }) {
+function DescribeAddYourOwn(props: { value: string; onChange: (newValue: string) => void }): JSX.Element {
   return <div>
     <label>What obstruction did you find?</label>
-    <input type="text" onChange={(e) => props.onChange(e.target.value)} />
+    <input type="text" onChange={(e): void => props.onChange(e.target.value)} />
   </div>
 }
 
-function ShowAddYourOwn(props: { value: string }) {
+function ShowAddYourOwn(props: { value: string }): JSX.Element {
   return <div style={{ width: "100%", height: "100%" }}>
     {props.value}
   </div>

@@ -1,20 +1,14 @@
 import { useCallback } from 'react';
-
 import useIdbKeyval from './use-idb-keyval';
 
-function makeCountingArray(length: number) {
-  return Array.from({ length }, (_, index) => index);
-}
-
 /** Returns a random integer in [0, max). */
-function getRandomNaturalUpTo(max: number) {
+function getRandomNaturalUpTo(max: number): number {
   return Math.floor(Math.random() * (max + 1));
 }
 
-function randomShuffle(arr: Array<any>) {
-  const len = arr.length;
+function randomShuffle<T>(arr: T[]): void {
   for (let index = arr.length - 1; index > 0; index--) {
-    let swapIndex = getRandomNaturalUpTo(index);
+    const swapIndex = getRandomNaturalUpTo(index);
     [arr[index], arr[swapIndex]] = [arr[swapIndex], arr[index]];
   }
 }
@@ -23,28 +17,28 @@ function randomShuffle(arr: Array<any>) {
  * Returns null values before idb-keyval has been read for the first time.
  */
 export default function useTileStorage(): {
-  tileorder: number[],
-  matched: boolean[],
-  toggleMatched: (index: number) => void,
-  newBoard: () => void
+  tileorder: number[];
+  matched: boolean[];
+  toggleMatched: (index: number) => void;
+  newBoard: () => void;
 } {
   let [tileorder, setTileorder] = useIdbKeyval<number[]>("tileorder", null);
   let [matched, setMatched] = useIdbKeyval("matched", null);
 
-  let toggleMatched = useCallback((tileIndex: number) => {
-    let newMatched = Array.from(matched);
+  const toggleMatched = useCallback((tileIndex: number) => {
+    const newMatched = Array.from(matched);
     newMatched[tileIndex] = !newMatched[tileIndex];
     setMatched(newMatched);
   }, [matched, setMatched]);
 
-  let newBoard = useCallback(() => {
+  const newBoard = useCallback(() => {
     // Array from 1..24, inclusive.
-    let tileorder = Array.from({ length: 24 }, (_, index) => index + 1);
+    const tileorder = Array.from({ length: 24 }, (_, index) => index + 1);
     randomShuffle(tileorder);
     // Tile 0 is the free tile; insert it at index 12, the middle of the array.
     tileorder.splice(12, 0, 0);
 
-    let matched = Array(25).fill(false);
+    const matched = Array(25).fill(false);
     matched[12] = true;
     setTileorder(tileorder);
     setMatched(matched);

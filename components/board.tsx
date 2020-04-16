@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react';
-
-import Tile from "./tile"
+import React from 'react';
+import Button from 'react-bootstrap/Button';
 import useTileStorage from "../hooks/use-tile-storage";
 import { wonBingo } from "../services/bingo";
-import Button from 'react-bootstrap/Button'
+import Tile from "./tile";
 
-
-export default function Board() {
-  let { tileorder, matched, toggleMatched, newBoard } = useTileStorage();
+export default function Board(): JSX.Element {
+  const { tileorder, matched, toggleMatched, newBoard } = useTileStorage();
 
   if (tileorder === null || matched === null) {
     return <h1>Loading...</h1>;
@@ -22,10 +20,10 @@ export default function Board() {
         {[0, 1, 2, 3, 4].map(row =>
           <tr key={row}>
             {[0, 1, 2, 3, 4].map(col => {
-              let flatIndex = row * 5 + col;
+              const flatIndex = row * 5 + col;
               return <Tile key={col} tileid={tileorder[flatIndex]}
                 matched={matched[flatIndex]}
-                onToggleMatched={() => toggleMatched(flatIndex)}></Tile>
+                onToggleMatched={(): void => toggleMatched(flatIndex)}></Tile>
             })}
           </tr>
         )}
@@ -38,4 +36,3 @@ export default function Board() {
     <Button variant="primary" block onClick={newBoard}>Generate a new board</Button>
   </>;
 }
-;

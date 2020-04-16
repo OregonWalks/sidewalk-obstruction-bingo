@@ -10,11 +10,11 @@ function checkLine(matched: boolean[], start: number, increment: number): boolea
  */
 export function wonBingo(matched: boolean[]): boolean {
   // Horizontal:
-  for (let start of [0, 5, 10, 15, 20]) {
+  for (const start of [0, 5, 10, 15, 20]) {
     if (checkLine(matched, start, 1)) return true;
   }
   // Vertical:
-  for (let start of [0, 1, 2, 3, 4]) {
+  for (const start of [0, 1, 2, 3, 4]) {
     if (checkLine(matched, start, 5)) return true;
   }
   // Top left to bottom right:

@@ -1,6 +1,6 @@
 import { get, set } from 'idb-keyval';
-import useSWR from 'swr'
 import { useCallback } from 'react';
+import useSWR from 'swr';
 
 /**
  * A React Hook that maintains a local variable as the value of an idb-keyval
@@ -16,12 +16,11 @@ import { useCallback } from 'react';
  * @returns an array of [value, set], where 'value' is the value of idb-keyval.get(key),
  * and 'set(newVal)' passes through to idb-keyval.set(key, newVal).
  */
-export default function useIdbKeyval<Type>(key: string, initialValue: Type)
-  : [Type, (newval: Type) => void] {
-  let { data, mutate } = useSWR<Type, DOMException>(
+export default function useIdbKeyval<Type>(key: string, initialValue: Type): [Type, (newval: Type) => void] {
+  const { data, mutate } = useSWR<Type, DOMException>(
     ("indexedDB" in globalThis) && key, get, { initialData: initialValue });
 
-  let update = useCallback((newVal: Type) => {
+  const update = useCallback((newVal: Type) => {
     mutate(set(key, newVal).then(() => newVal), false);
   }, [key, mutate]);
 
