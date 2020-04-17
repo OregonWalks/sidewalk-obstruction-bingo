@@ -1,5 +1,5 @@
 import { get, set } from 'idb-keyval';
-import { useCallback } from 'react';
+import { useCallback, useDebugValue } from 'react';
 import useSWR from 'swr';
 
 /**
@@ -19,6 +19,8 @@ import useSWR from 'swr';
 export default function useIdbKeyval<Type>(key: string, initialValue: Type): [Type, (newval: Type) => void] {
   const { data, mutate } = useSWR<Type, DOMException>(
     ("indexedDB" in globalThis) && key, get, { initialData: initialValue });
+
+  useDebugValue(`${key}: ${data}`);
 
   const update = useCallback((newVal: Type) => {
     mutate(set(key, newVal).then(() => newVal), false);

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
-export interface Tile {
+export interface TileInterface {
   id: number;
   /** Path relative to the public/tiles directory. */
   image: string;
@@ -9,25 +9,29 @@ export interface Tile {
   //** idb-keyval key to store extra data used by the tile. */
   idbKey?: string;
   /** React component to ask the user for more detail about why they marked this tile. */
-  describe?: (props: object) => JSX.Element;
+  describe?: (props: { detailString: string; setDetailString: (s: string) => void }) => JSX.Element;
   /** React component to render the user's answer over the main tile. */
   show?: (props: object) => JSX.Element;
 }
 
-function DescribeAddYourOwn(props: { value: string; onChange: (newValue: string) => void }): JSX.Element {
+function DescribeAddYourOwn({ detailString, setDetailString }: { detailString: string; setDetailString: (newValue: string) => void }): JSX.Element {
+  const onChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setDetailString(event.target.value)
+  }, [setDetailString]);
+
   return <div>
     <label>What obstruction did you find?</label>
-    <input type="text" onChange={(e): void => props.onChange(e.target.value)} />
+    <input type="text" value={detailString} onChange={onChange} />
   </div>
 }
 
-function ShowAddYourOwn(props: { value: string }): JSX.Element {
+function ShowAddYourOwn(props: { detailString: string }): JSX.Element {
   return <div style={{ width: "100%", height: "100%" }}>
-    {props.value}
+    {props.detailString}
   </div>
 }
 
-const TILES: Tile[] = [
+const TILES: TileInterface[] = [
   {
     id: 0,
     image: "free_square.svg",

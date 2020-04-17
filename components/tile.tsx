@@ -1,8 +1,17 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import TILES from '../services/tiles';
 
-export default function Tile({ tileid, matched, onToggleMatched }: { tileid: number; matched: boolean; onToggleMatched: () => void }): JSX.Element {
+export default function Tile({ tileindex, tileid, matched, onToggleMatched }: {
+  tileindex: number;
+  tileid: number;
+  matched: boolean;
+  onToggleMatched: (tileindex: number) => void;
+}): JSX.Element {
   const tile = TILES[tileid];
+
+  const onClick = useCallback(
+    () => onToggleMatched(tileindex),
+    [onToggleMatched, tileindex]);
 
   let drawMatched = null;
   if (matched) {
@@ -15,7 +24,7 @@ export default function Tile({ tileid, matched, onToggleMatched }: { tileid: num
       }} />;
   }
 
-  return <td onClick={onToggleMatched} style={{ position: "relative" }}>
+  return <td onClick={onClick} style={{ position: "relative" }}>
     <img alt={tile.alt} src={"/tiles/" + tile.image}
       width="150" height="150"
       style={{
