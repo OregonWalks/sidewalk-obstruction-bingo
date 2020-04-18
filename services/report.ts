@@ -1,4 +1,4 @@
-import { DBSchema, IDBPDatabase, openDB } from 'idb';
+import { DBSchema, openDB } from 'idb';
 import pushid from "pushid";
 import { TileDetails } from "../components/gather-tile-details-modal";
 import { TileInterface } from "./tiles";
@@ -47,30 +47,27 @@ interface SobDB extends DBSchema {
   };
 }
 
-const sobDB = (function (): Promise<IDBPDatabase<SobDB>> {
-  if (typeof window !== 'undefined') {
-    return openDB<SobDB>("sidewalk-obstruction-bingo", 1, {
-      upgrade(db, oldVersion) {
-        switch (oldVersion) {
-          case 0: {
-            const reportStore = db.createObjectStore('queuedReports', { keyPath: 'uuid' });
-            reportStore.createIndex("tile", "tile");
-            reportStore.createIndex("addTime", "addTime");
-          }
+// Only define this in the browser.
+const sobDB = typeof window === 'undefined' ? undefined :
+  openDB<SobDB>("sidewalk-obstruction-bingo", 1, {
+    upgrade(db, oldVersion) {
+      switch (oldVersion) {
+        case 0: {
+          const reportStore = db.createObjectStore('queuedReports', { keyPath: 'uuid' });
+          reportStore.createIndex("tile", "tile");
+          reportStore.createIndex("addTime", "addTime");
         }
-      },
-      blocking() {
-        // Everything should always be saved to IDB, and the system should only
-        // notice that an upgrade is needed as another page is loaded, so we want to
-        // get out of the way ASAP. Do that by immediately closing the database, and
-        // then reload the page to get back in sync with the new code.
-        sobDB.then(db => db.close());
-        location.reload();
-      },
-    });
-  }
-  return Promise.reject(new Error("Don't use the database on the server."));
-})();
+      }
+    },
+    blocking() {
+      // Everything should always be saved to IDB, and the system should only
+      // notice that an upgrade is needed as another page is loaded, so we want to
+      // get out of the way ASAP. Do that by immediately closing the database, and
+      // then reload the page to get back in sync with the new code.
+      sobDB.then(db => db.close());
+      location.reload();
+    },
+  });
 
 /*
 const reportAppScriptUrl =
