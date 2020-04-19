@@ -23,7 +23,7 @@ interface ReportBase {
 interface FoundReport extends ReportBase {
   type: 'Found';
   /** Extra information about this particular tile. */
-  detail: string;
+  details: string;
   /** The name of a location, as opposed to a geolocation. Either this or
    * lat/long/accuracy will be set. */
   textLocation: string | "";
@@ -69,36 +69,89 @@ const sobDB = typeof window === 'undefined' ? undefined :
     },
   });
 
-/*
 const reportAppScriptUrl =
   "https://script.google.com/macros/s/AKfycbwx-6aWGb_zojc9r-RGz84NGeTmWdv96ovuLOZQSNzRfyUxR2U/exec";
 
 const productionSpreadsheet = "1oePSSxULfE4u1DZ2Gf91SkacNvYWXc_ZlbzEzntzlto";
+const testSpreadsheet = "1ahxdRFPvX_aZd3O3lnzT36zNTWpj0ZMF6BqxWmKXYsA";
+const currentSpreadsheet = ((): string => {
+  if (typeof window === 'undefined') {
+    return "";
+  } else if (location.hostname.endsWith("localhost")) {
+    return testSpreadsheet;
+  } else {
+    return productionSpreadsheet;
+  }
+})();
 
 const sendReportsDelay = 60 * 1000;
-let sendReportsTaskId = -1;
+const minReportAgeToSend = 10 * 1000;
 
+let sendReportsTaskId = -1;
 
 function scheduleSendReports(): void {
   if (sendReportsTaskId === -1) {
     sendReportsTaskId = window.setTimeout(async () => {
-      try {
-        const db = await sobDB;
-        const tx1 = db.transaction('reportsQueued', 'readonly');
+      sendReportsTaskId = -1;
 
-        const reportTarget = new URL(reportAppScriptUrl);
-        reportTarget.searchParams.append("sheet", productionSpreadsheet);
-        const response = await fetch(reportTarget.href, {
-          method: "POST",
-        });
+      const now = new Date();
+      const db = await sobDB;
+      const tx1 = db.transaction('queuedReports', 'readwrite');
+      const reports = await tx1.store.index('addTime')
+        .getAll(IDBKeyRange.upperBound(new Date(now.getTime() - minReportAgeToSend)));
 
-        sendReportsTaskId = -1;
-      } catch (e) {
-        sendReportsTaskId = -1;
+      // Mark all the reports as last-sent now.
+      await Promise.all(reports.map(report => {
+        report.sending = now;
+        return tx1.store.put(report);
+      }));
+      const postBody = JSON.stringify(reports.map(({
+        uuid, type, tile, details, textLocation, latitude, longitude, accuracy }:
+        // The funny type here tells Typescript that I mean to read fields
+        // that don't exist on all the possible input types. The rest will get
+        // undefined, which is what I want in the output.
+        FoundReport & CancelReport) =>
+        ({ uuid, type, tile, details, textLocation, latitude, longitude, accuracy })));
+
+      // Explicitly close the transaction before the fetch, so it's not
+      // ambiguous whether it closes during the fetch.
+      await tx1.done;
+
+      const reportTarget = new URL(reportAppScriptUrl);
+      reportTarget.searchParams.append("sheet", currentSpreadsheet);
+      const req = new Request(reportTarget.href, {
+        method: "POST",
+        headers: new Headers({
+          // Avoid a CORS preflight:
+          'Content-Type': 'text/plain',
+        }),
+        body: postBody,
+        credentials: "omit",
+        referrerPolicy: "origin",
+      });
+      const response = await fetch(req);
+      if (!response.ok) {
+        console.error("Failed to send report:", response);
+        return;
       }
+
+      const { written, debugLog, error }: { written: string[]; debugLog: unknown[]; error: object } = await response.json();
+      if (error) {
+        console.error('Server error:', error);
+      }
+      if (debugLog) {
+        console.log('Server debug log:', debugLog);
+      }
+
+      const tx2 = db.transaction('queuedReports', 'readwrite');
+      await Promise.all(written.map(uuid => tx2.store.delete(uuid)));
+      if ((await tx2.store.count()) > 0) {
+        scheduleSendReports();
+      }
+      await tx2.done;
     }, sendReportsDelay);
   }
-}*/
+}
 
 export async function queueReport(tile: TileInterface, { detailString, textLocation, location: { latitude, longitude, accuracy } }: TileDetails): Promise<string> {
   const db = await sobDB;
@@ -110,12 +163,14 @@ export async function queueReport(tile: TileInterface, { detailString, textLocat
     sending: null,
     type: 'Found',
     tile: tile.alt,
-    detail: detailString,
+    details: detailString,
     textLocation,
     latitude,
     longitude,
     accuracy,
   });
+  await tx.done;
+  scheduleSendReports();
   return uuid;
 }
 
@@ -132,9 +187,11 @@ export async function tryUnqueueReport(tile: TileInterface): Promise<void> {
       type: 'Cancel',
       tile: tile.alt,
     });
+    await tx.done;
+    scheduleSendReports();
   } else {
     // We caught it in time and can just delete the report.
-    tx.store.delete(lastMatchingReportCursor.key);
+    await tx.store.delete(lastMatchingReportCursor.key);
+    await tx.done;
   }
-  console.log("Unqueue", { tile: tile.alt });
 }
