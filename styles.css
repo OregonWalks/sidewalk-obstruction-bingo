@@ -1,5 +1,10 @@
 html, body, #__next, main {height:100%}
 
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
@@ -16,4 +21,8 @@ p {
 a {
     color: #0073bb;
     text-decoration: none;
+}
+
+.banner {
+    margin: 10px 20px;
 }

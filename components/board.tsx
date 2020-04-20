@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 import useIdbKeyval from '../hooks/use-idb-keyval';
 import useTileStorage from "../hooks/use-tile-storage";
 import { wonBingo } from "../services/bingo";
@@ -39,7 +40,7 @@ export default function Board(): JSX.Element {
 
   let board: JSX.Element;
   if (wonBingo(matched)) {
-    board = <h1>You won!</h1>;
+    board = <img src="/you_won.gif"></img>;
   } else {
     board = <table style={{ flex: "1 auto", height: "90%" }}>
       <tbody>
@@ -62,6 +63,10 @@ export default function Board(): JSX.Element {
     {board}
     <GatherTileDetailsModal tile={TILES[tileorder[clickedTile]]} onSave={onGotTileDetails} onCancel={onCanceledTileDetails}
       autoLocation={autoLocation} setAutoLocation={setAutoLocation} />
-    <Button variant="primary" block onClick={newBoard}>Generate a new board</Button>
+    <Card>
+      <Card.Header>
+        <Button variant="primary" block onClick={newBoard}>Generate a new board</Button>
+      </Card.Header>
+    </Card>
   </>;
 }
