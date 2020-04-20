@@ -1,5 +1,4 @@
 import { DBSchema, openDB } from 'idb';
-import pushid from "pushid";
 import { TileDetails } from "../components/gather-tile-details-modal";
 import { TileInterface } from "./tiles";
 
@@ -12,9 +11,6 @@ interface ReportBase {
   /** When the report last started being sent. If this is older than a
    * reasonable timeout, we should assume the send failed. */
   sending: Date | null;
-  /** Currently the alt text of the tile. This should probably be something
- * more stable. */
-  tile: string;
 
   /** Most reports are that someone found an obstruction, but if they un-mark a
    * tile after that tile was reported, we report a 'Cancel' update to undo it. */
@@ -22,6 +18,9 @@ interface ReportBase {
 }
 interface FoundReport extends ReportBase {
   type: 'Found';
+  /** Currently the alt text of the tile. This should probably be something
+   * more stable. */
+  tile: string;
   /** Extra information about this particular tile. */
   details: string;
   /** The name of a location, as opposed to a geolocation. Either this or
@@ -34,6 +33,7 @@ interface FoundReport extends ReportBase {
 }
 interface CancelReport extends ReportBase {
   type: 'Cancel';
+  // Identifies the report to cancel with its uuid.
 }
 
 interface SobDB extends DBSchema {
@@ -153,10 +153,9 @@ function scheduleSendReports(): void {
   }
 }
 
-export async function queueReport(tile: TileInterface, { detailString, textLocation, location: { latitude, longitude, accuracy } }: TileDetails): Promise<string> {
+export async function queueReport(uuid: string, tile: TileInterface, { detailString, textLocation, location: { latitude, longitude, accuracy } }: TileDetails): Promise<string> {
   const db = await sobDB;
   const tx = db.transaction('queuedReports', 'readwrite');
-  const uuid = pushid();
   await tx.store.add({
     uuid,
     addTime: new Date(),
@@ -174,24 +173,23 @@ export async function queueReport(tile: TileInterface, { detailString, textLocat
   return uuid;
 }
 
-export async function tryUnqueueReport(tile: TileInterface): Promise<void> {
+export async function tryUnqueueReport(uuid: string): Promise<void> {
   const db = await sobDB;
   const tx = db.transaction('queuedReports', 'readwrite');
-  const lastMatchingReportCursor = await tx.store.index('tile').openCursor(tile.alt, 'prev');
-  if (lastMatchingReportCursor === undefined || lastMatchingReportCursor.value.sending !== null) {
+  const lastMatchingReportCursor = await tx.store.openCursor(uuid);
+  if (lastMatchingReportCursor === null || lastMatchingReportCursor.value.sending !== null) {
     // The 'Found' report was already sent, so add a 'Cancel' report.
     await tx.store.add({
-      uuid: pushid(),
+      uuid,
       addTime: new Date(),
       sending: null,
       type: 'Cancel',
-      tile: tile.alt,
     });
     await tx.done;
     scheduleSendReports();
   } else {
     // We caught it in time and can just delete the report.
-    await tx.store.delete(lastMatchingReportCursor.key);
+    await lastMatchingReportCursor.delete();
     await tx.done;
   }
 }

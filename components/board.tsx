@@ -1,3 +1,4 @@
+import pushid from 'pushid';
 import React, { useCallback, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
@@ -10,25 +11,26 @@ import { GatherTileDetailsModal, TileDetails } from "./gather-tile-details-modal
 import Tile from "./tile";
 
 export default function Board(): JSX.Element {
-  const { tileorder, matched, toggleMatched, newBoard } = useTileStorage();
+  const { tileorder, matched, setMatched, unsetMatched, newBoard } = useTileStorage();
 
   const [clickedTile, setClickedTile] = useState<number | null>(null);
   const [autoLocation, setAutoLocation] = useIdbKeyval("auto-location", false);
 
   const onToggleMatched = useCallback((tileindex: number) => {
     if (matched[tileindex]) {
-      tryUnqueueReport(TILES[tileorder[tileindex]]);
-      toggleMatched(tileindex);
+      tryUnqueueReport(matched[tileindex]);
+      unsetMatched(tileindex);
     } else {
       setClickedTile(tileindex);
     }
-  }, [setClickedTile, matched, toggleMatched, tileorder]);
+  }, [setClickedTile, matched, unsetMatched]);
 
   const onGotTileDetails = useCallback((tileDetails: TileDetails) => {
-    toggleMatched(clickedTile);
-    queueReport(TILES[tileorder[clickedTile]], tileDetails);
     setClickedTile(null);
-  }, [clickedTile, tileorder, toggleMatched])
+    const uuid = pushid();
+    setMatched(clickedTile, uuid);
+    queueReport(uuid, TILES[tileorder[clickedTile]], tileDetails)
+  }, [clickedTile, tileorder, setMatched])
 
   const onCanceledTileDetails = useCallback(() => {
     setClickedTile(null);
