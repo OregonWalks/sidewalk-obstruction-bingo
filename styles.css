@@ -1,7 +1,7 @@
 html, body, #__next, main {height:100%}
 
 main {
-    max-width: 1200px;
+    max-width: 750px;
     margin: 0 auto;
 }
 
