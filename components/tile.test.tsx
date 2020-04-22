@@ -2,7 +2,7 @@ import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import Tile from './tile';
 
-function tr() {
+function tr(): HTMLTableRowElement {
   const tr = document.createElement("tr");
   const table = document.createElement("table");
   table.appendChild(tr);
