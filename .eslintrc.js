@@ -20,8 +20,9 @@ module.exports = {
     sourceType: 'module'
   },
   ignorePatterns: [
-    "*.svg",
     "*.css",
+    "*.gif",
+    "*.svg",
     "node_modules/",
   ],
   plugins: [

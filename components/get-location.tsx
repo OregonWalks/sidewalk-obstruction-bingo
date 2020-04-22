@@ -10,7 +10,7 @@ export default function GetLocation({ location, setLocation, textLocation, setTe
 
   // True if the user has asked for their location in this instance of the dialog.
   const [geolocated, setGeolocated] = useState(false);
-  const [geolocationError, setGeolocationError] = useState<PositionError>(null);
+  //const [geolocationError, setGeolocationError] = useState<PositionError>(null);
 
   const onChangeLocation = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setTextLocation(event.target.value);
@@ -26,8 +26,8 @@ export default function GetLocation({ location, setLocation, textLocation, setTe
       setGeolocated(true);
       setTextLocation("");
       setLocation(position.coords);
-    }, (error) => {
-      setGeolocationError(error);
+    }, () => {
+      //setGeolocationError(error);
     }, {
       maximumAge: 5000,
       timeout: 10000,

@@ -9,6 +9,7 @@
     "build": "next build",
     "start": "next start",
     "test": "jest --watch",
+    "test:ci": "jest --ci",
     "testonce": "jest"
   },
   "keywords": [],
