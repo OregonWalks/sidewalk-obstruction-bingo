@@ -12,7 +12,7 @@ function tr(): HTMLTableRowElement {
 
 test('shows a simple unmatched tile', async () => {
   const toggleMatchedCalls = [];
-  function toggleMatched(index): void { toggleMatchedCalls.push(index); }
+  function toggleMatched(index: number): void { toggleMatchedCalls.push(index); }
   const { findByAltText } =
     render(<Tile tileindex={1} tileid={3} matched={null} onToggleMatched={toggleMatched} />, {
       container: tr(),
