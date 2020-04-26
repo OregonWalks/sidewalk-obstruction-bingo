@@ -1,6 +1,15 @@
-import { get, set } from 'idb-keyval';
-import { useCallback, useDebugValue } from 'react';
+import { useCallback, useContext, useDebugValue } from 'react';
 import useSWR from 'swr';
+import DbContext, { SobDB } from '../context/db-context';
+
+async function get<Type>(db: SobDB, key: string): Promise<Type> {
+  const result = await db.get('keyval', key) as Type;
+  return result;
+}
+
+async function set<Type>(db: SobDB, key: string, value: Type): Promise<void> {
+  await db.put('keyval', value, key);
+}
 
 /**
  * A React Hook that maintains a local variable as the value of an idb-keyval
@@ -17,14 +26,15 @@ import useSWR from 'swr';
  * and 'set(newVal)' passes through to idb-keyval.set(key, newVal).
  */
 export default function useIdbKeyval<Type>(key: string, initialValue: Type): [Type, (newval: Type) => void] {
+  const db = useContext(DbContext);
   const { data, mutate } = useSWR<Type, DOMException>(
-    ("indexedDB" in globalThis) && key, get, { initialData: initialValue });
+    [db, key], get, { initialData: initialValue });
 
   useDebugValue(`${key}: ${data}`);
 
   const update = useCallback((newVal: Type) => {
-    mutate(set(key, newVal).then(() => newVal), false);
-  }, [key, mutate]);
+    mutate(set(db, key, newVal).then(() => newVal), false);
+  }, [db, key, mutate]);
 
   return [data, update];
 }

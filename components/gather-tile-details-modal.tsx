@@ -11,11 +11,13 @@ export interface TileDetails {
   detailString: string | null;
 }
 
-export function GatherTileDetailsModal({ tile, autoLocation, setAutoLocation, onSave, onCancel }: {
+export function GatherTileDetailsModal({ tile, sendReports, autoLocation, setAutoLocation, onReport, onDontReport, onCancel }: {
   tile: TileInterface;
+  sendReports: boolean | undefined;
   autoLocation: boolean;
   setAutoLocation: (b: boolean) => void;
-  onSave: (details: TileDetails) => void;
+  onReport: (details: TileDetails) => void;
+  onDontReport: () => void;
   onCancel: () => void;
 }): JSX.Element {
   const [location, setLocation] = useState<Coordinates>(null);
@@ -23,20 +25,17 @@ export function GatherTileDetailsModal({ tile, autoLocation, setAutoLocation, on
   const [detailString, setDetailString] = useState<string>(null);
 
   const clickReport = useCallback(() => {
-    onSave({ location, textLocation, detailString });
-  }, [onSave, location, textLocation, detailString])
+    onReport({ location, textLocation, detailString });
+  }, [onReport, location, textLocation, detailString])
 
-  if (tile == null) {
-    return null;
-  }
-
-  return <Modal show={true}>
+  return <Modal show={tile != null && sendReports}>
     <GetLocation location={location} setLocation={setLocation}
       textLocation={textLocation} setTextLocation={setTextLocation}
       autoLocation={autoLocation} setAutoLocation={setAutoLocation}></GetLocation>
-    {tile.describe?.({ detailString, setDetailString })}
+    {tile?.describe?.({ detailString, setDetailString })}
     <Modal.Footer>
       <Button variant="secondary" onClick={onCancel}>Cancel</Button>
+      <Button variant="secondary" onClick={onDontReport}>Don&apos;t Report</Button>
       <Button variant="primary" onClick={clickReport}>Report</Button>
     </Modal.Footer>
   </Modal>;

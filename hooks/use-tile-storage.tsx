@@ -39,7 +39,7 @@ export default function useTileStorage(): {
 
   const unsetMatched = useCallback((tileIndex: number) => {
     if (matched[tileIndex] === null) {
-      throw new Error(`Called unetMatched(${tileIndex}) on an already unmatched tile.`);
+      throw new Error(`Called unsetMatched(${tileIndex}) on an already unmatched tile.`);
     }
     const newMatched = Array.from(matched);
     newMatched[tileIndex] = null;
@@ -54,7 +54,7 @@ export default function useTileStorage(): {
     tileorder.splice(12, 0, 0);
 
     const matched: (string | null)[] = Array(25).fill(null);
-    matched[12] = "";
+    matched[12] = "Free Square";
     setTileorder(tileorder);
     setMatched(matched);
   }, [setTileorder, setMatched]);

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 
 export interface TileInterface {
   id: number;
@@ -15,13 +15,10 @@ export interface TileInterface {
 }
 
 function DescribeAddYourOwn({ detailString, setDetailString }: { detailString: string; setDetailString: (newValue: string) => void }): JSX.Element {
-  const onChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setDetailString(event.target.value)
-  }, [setDetailString]);
-
   return <div>
-    <label>What obstruction did you find?</label>
-    <input type="text" value={detailString} onChange={onChange} />
+    <label>What obstruction did you find?
+    <input type="text" value={detailString} onChange={(event): void => { setDetailString(event.target.value); }} />
+    </label>
   </div>
 }
 
