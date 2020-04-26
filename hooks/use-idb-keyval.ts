@@ -3,8 +3,7 @@ import useSWR from 'swr';
 import DbContext, { SobDB } from '../context/db-context';
 
 async function get<Type>(db: SobDB, key: string): Promise<Type> {
-  const result = await db.get('keyval', key) as Type;
-  return result;
+  return await db.get('keyval', key) as Type;
 }
 
 async function set<Type>(db: SobDB, key: string, value: Type): Promise<void> {
@@ -27,12 +26,21 @@ async function set<Type>(db: SobDB, key: string, value: Type): Promise<void> {
  */
 export default function useIdbKeyval<Type>(key: string, initialValue: Type): [Type, (newval: Type) => void] {
   const db = useContext(DbContext);
+  if (initialValue) {
+    throw new Error(
+      `initialValue must be falsy, not ${JSON.stringify(initialValue)}, ` +
+      `or else useSWR won't revalidate it. See ` +
+      `https://github.com/zeit/swr/issues/284.`);
+  }
   const { data, mutate } = useSWR<Type, DOMException>(
-    [db, key], get, { initialData: initialValue });
+    db && key && [db, key], get, { initialData: initialValue });
 
   useDebugValue(`${key}: ${data}`);
 
   const update = useCallback((newVal: Type) => {
+    if (db == null) {
+      throw new Error("Can't update before the database is open.");
+    }
     mutate(set(db, key, newVal).then(() => newVal), false);
   }, [db, key, mutate]);
 

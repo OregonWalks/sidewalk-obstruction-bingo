@@ -2,8 +2,8 @@ import { openDB } from 'idb';
 import React, { ReactNode, useEffect, useState } from 'react';
 import DbContext, { SobDBSchema } from '../context/db-context';
 
-export default function DbProvider({ initialKeyvalsForTest = {}, children }: {
-  initialKeyvalsForTest?: object;
+export default function DbProvider({ initialKeyvalsForTest = undefined, children }: {
+  initialKeyvalsForTest?: object | undefined;
   children: ReactNode;
 }): JSX.Element {
   const [db, setDb] = useState(null);
@@ -11,7 +11,7 @@ export default function DbProvider({ initialKeyvalsForTest = {}, children }: {
   useEffect(() => {
     let mounted = true;
     const dbPromise = openDB<SobDBSchema>("sidewalk-obstruction-bingo", 1, {
-      upgrade(db, oldVersion, newVersion, tx) {
+      upgrade(db, oldVersion, _newVersion, tx) {
         switch (oldVersion) {
           case 0: {
             const reportStore = db.createObjectStore('queuedReports', { keyPath: 'uuid' });
@@ -20,8 +20,10 @@ export default function DbProvider({ initialKeyvalsForTest = {}, children }: {
 
             db.createObjectStore('keyval');
 
-            for (const [key, value] of Object.entries(initialKeyvalsForTest)) {
-              tx.objectStore("keyval").add(value, key);
+            if (initialKeyvalsForTest !== undefined) {
+              for (const [key, value] of Object.entries(initialKeyvalsForTest)) {
+                tx.objectStore("keyval").add(value, key);
+              }
             }
           }
         }
