@@ -12,6 +12,6 @@ afterEach(async () => {
   await deleteDB('sidewalk-obstruction-bingo');
 });
 
-process.on('unhandledRejection', (r: Error): void => {
-  console.error(r.stack);
+process.on('unhandledRejection', (reason: {} | null | undefined): void => {
+  console.dir(reason);
 });

@@ -5,24 +5,24 @@ import { TileInterface } from '../services/tiles';
 import GetLocation from './get-location';
 
 export interface TileDetails {
-  location: Coordinates | null;
+  location?: Coordinates;
   /** "" when not set. */
   textLocation: string;
-  detailString: string | null;
+  detailString?: string;
 }
 
-export function GatherTileDetailsModal({ tile, sendReports, autoLocation, setAutoLocation, onReport, onDontReport, onCancel }: {
-  tile: TileInterface;
+export function GatherTileDetailsModal({ tile, sendReports = false, autoLocation, setAutoLocation, onReport, onDontReport, onCancel }: {
+  tile: TileInterface | null;
   sendReports: boolean | undefined;
-  autoLocation: boolean;
+  autoLocation: boolean | undefined;
   setAutoLocation: (b: boolean) => void;
   onReport: (details: TileDetails) => void;
   onDontReport: () => void;
   onCancel: () => void;
 }): JSX.Element {
-  const [location, setLocation] = useState<Coordinates>(null);
+  const [location, setLocation] = useState<Coordinates | undefined>(undefined);
   const [textLocation, setTextLocation] = useState<string>("");
-  const [detailString, setDetailString] = useState<string>(null);
+  const [detailString, setDetailString] = useState<string | undefined>(undefined);
 
   const clickReport = useCallback(() => {
     onReport({ location, textLocation, detailString });

@@ -24,7 +24,7 @@ async function set<Type>(db: SobDB, key: string, value: Type): Promise<void> {
  * @returns an array of [value, set], where 'value' is the value of idb-keyval.get(key),
  * and 'set(newVal)' passes through to idb-keyval.set(key, newVal).
  */
-export default function useIdbKeyval<Type>(key: string, initialValue: Type): [Type, (newval: Type) => void] {
+export default function useIdbKeyval<Type>(key: string, initialValue: Type): [Type | undefined, (newval: Type) => void] {
   const db = useContext(DbContext);
   if (initialValue) {
     throw new Error(
@@ -33,7 +33,7 @@ export default function useIdbKeyval<Type>(key: string, initialValue: Type): [Ty
       `https://github.com/zeit/swr/issues/284.`);
   }
   const { data, mutate } = useSWR<Type, DOMException>(
-    db && key && [db, key], get, { initialData: initialValue });
+    db && key ? [db, key] : null, get, { initialData: initialValue });
 
   useDebugValue(`${key}: ${data}`);
 

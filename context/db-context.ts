@@ -21,14 +21,14 @@ export interface FoundReport extends ReportBase {
    * more stable. */
   tile: string;
   /** Extra information about this particular tile. */
-  details: string;
+  details?: string;
   /** The name of a location, as opposed to a geolocation. Either this or
    * lat/long/accuracy will be set. */
   textLocation: string | "";
-  latitude: number | null;
-  longitude: number | null;
+  latitude?: number;
+  longitude?: number;
   /** As in the Geolocation interface, the 95% confidence radius in meters. */
-  accuracy: number | null;
+  accuracy?: number;
 }
 export interface CancelReport extends ReportBase {
   type: 'Cancel';
@@ -52,6 +52,6 @@ export interface SobDBSchema extends DBSchema {
 
 export type SobDB = IDBPDatabase<SobDBSchema>;
 
-const DbContext = React.createContext<SobDB>(null);
+const DbContext = React.createContext<SobDB | undefined>(undefined);
 
 export default DbContext;

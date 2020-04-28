@@ -2,7 +2,7 @@ import pushid from 'pushid';
 import React, { useCallback, useContext, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import DbContext from '../context/db-context';
+import DbContext, { SobDB } from '../context/db-context';
 import useIdbKeyval from '../hooks/use-idb-keyval';
 import useTileStorage from "../hooks/use-tile-storage";
 import { wonBingo } from "../services/bingo";
@@ -13,16 +13,18 @@ import { GatherTileDetailsModal, TileDetails } from "./gather-tile-details-modal
 import Tile from "./tile";
 
 export default function Board(): JSX.Element {
-  const db = useContext(DbContext);
+  const db: SobDB | undefined = useContext(DbContext);
   const { tileorder, matched, setMatched, unsetMatched, newBoard } = useTileStorage();
 
   const [clickedTile, setClickedTile] = useState<number | null>(null);
-  const [sendReports, setSendReports] = useIdbKeyval("send-reports", null);
+  const [sendReports, setSendReports] = useIdbKeyval<boolean | undefined>("send-reports", undefined);
   const [autoLocation, setAutoLocation] = useIdbKeyval("auto-location", false);
 
   const onToggleMatched = useCallback((tileindex: number) => {
-    if (matched[tileindex]) {
-      tryUnqueueReport(db, matched[tileindex]);
+    if (db === undefined || matched === null) throw new Error("Can't happen");
+    const matchedtile = matched[tileindex];
+    if (matchedtile !== null) {
+      tryUnqueueReport(db, matchedtile);
       unsetMatched(tileindex);
     } else {
       if (sendReports === false) {
@@ -34,6 +36,10 @@ export default function Board(): JSX.Element {
   }, [db, setClickedTile, sendReports, setMatched, matched, unsetMatched]);
 
   const onGotTileDetails = useCallback((tileDetails: TileDetails) => {
+    if (db === undefined || tileorder === null) throw new Error("Can't happen");
+    if (clickedTile === null) {
+      throw new Error("Can't happen: got tile details with a null clickedTile.");
+    }
     setClickedTile(null);
     const uuid = pushid();
     setMatched(clickedTile, uuid);
@@ -41,6 +47,9 @@ export default function Board(): JSX.Element {
   }, [db, clickedTile, tileorder, setMatched])
 
   const onDontReportTileDetails = useCallback(() => {
+    if (clickedTile === null) {
+      throw new Error("Can't happen: got tile details with a null clickedTile.");
+    }
     setClickedTile(null);
     const uuid = pushid();
     setMatched(clickedTile, uuid);
@@ -78,7 +87,7 @@ export default function Board(): JSX.Element {
   return <>
     {board}
     <AskToReport show={clickedTile != null} sendReports={sendReports} setSendReports={setSendReports} />
-    <GatherTileDetailsModal tile={TILES[tileorder[clickedTile]]}
+    <GatherTileDetailsModal tile={clickedTile === null ? null : TILES[tileorder[clickedTile]]}
       onReport={onGotTileDetails} onDontReport={onDontReportTileDetails} onCancel={onCanceledTileDetails}
       sendReports={sendReports}
       autoLocation={autoLocation} setAutoLocation={setAutoLocation} />

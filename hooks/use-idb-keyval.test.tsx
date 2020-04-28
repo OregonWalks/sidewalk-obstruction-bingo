@@ -4,9 +4,9 @@ import DbProvider from '../components/db-provider';
 import useIdbKeyval from './use-idb-keyval';
 
 function TestKeyVal({ idbKey, value, reportValue }: {
-  idbKey: string; value: string; reportValue: (v: string) => void;
+  idbKey: string; value: string; reportValue: (v: string | null | undefined) => void;
 }): JSX.Element {
-  const [gotValue, setValue] = useIdbKeyval(idbKey, null);
+  const [gotValue, setValue] = useIdbKeyval<string | null | undefined>(idbKey, null);
   const onClick = useCallback((): void => setValue(value), [value, setValue]);
   reportValue(gotValue);
   return <label>Change from {String(gotValue)}{': '}

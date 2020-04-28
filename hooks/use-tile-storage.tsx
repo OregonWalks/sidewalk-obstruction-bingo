@@ -17,18 +17,21 @@ function randomShuffle<T>(arr: T[]): void {
  * Returns null values before idb-keyval has been read for the first time.
  */
 export default function useTileStorage(): {
-  tileorder: number[];
+  tileorder: number[] | null;
   /** An array of either null for unmatched things, or a report's uuid for
    * matched things. */
-  matched: (string | null)[];
+  matched: (string | null)[] | null;
   setMatched: (index: number, uuid: string) => void;
   unsetMatched: (index: number) => void;
   newBoard: () => void;
 } {
-  let [tileorder, setTileorder] = useIdbKeyval<number[]>("tileorder", null);
-  let [matched, setMatched] = useIdbKeyval<(string | null)[]>("matched", null);
+  let [tileorder, setTileorder] = useIdbKeyval<number[] | null>("tileorder", null);
+  let [matched, setMatched] = useIdbKeyval<(string | null)[] | null>("matched", null);
 
   const exposedSetMatched = useCallback((tileIndex: number, uuid: string) => {
+    if (matched == null) {
+      throw new Error(`Can't call setMatched before 'matched' is initialized.`);
+    }
     if (matched[tileIndex] !== null) {
       throw new Error(`Called setMatched(${tileIndex}) on an already matched tile.`);
     }
@@ -38,6 +41,9 @@ export default function useTileStorage(): {
   }, [matched, setMatched]);
 
   const unsetMatched = useCallback((tileIndex: number) => {
+    if (matched == null) {
+      throw new Error(`Can't call setMatched before 'matched' is initialized.`);
+    }
     if (matched[tileIndex] === null) {
       throw new Error(`Called unsetMatched(${tileIndex}) on an already unmatched tile.`);
     }

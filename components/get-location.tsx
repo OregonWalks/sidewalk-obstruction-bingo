@@ -3,9 +3,9 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
 export default function GetLocation({ location, setLocation, textLocation, setTextLocation, autoLocation, setAutoLocation }: {
-  location: Coordinates; setLocation: (coords: Coordinates) => void;
+  location?: Coordinates; setLocation: (coords: Coordinates | undefined) => void;
   textLocation: string; setTextLocation: (loc: string) => void;
-  autoLocation: boolean; setAutoLocation: (_: boolean) => void;
+  autoLocation?: boolean; setAutoLocation: (_: boolean) => void;
 }): JSX.Element {
 
   // True if the user has asked for their location in this instance of the dialog.
@@ -14,7 +14,7 @@ export default function GetLocation({ location, setLocation, textLocation, setTe
 
   const onChangeLocation = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setTextLocation(event.target.value);
-    setLocation(null);
+    setLocation(undefined);
   }, [setTextLocation, setLocation]);
 
   const onAutoLocationChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {

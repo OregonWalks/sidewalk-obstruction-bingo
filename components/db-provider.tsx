@@ -1,12 +1,12 @@
 import { openDB } from 'idb';
 import React, { ReactNode, useEffect, useState } from 'react';
-import DbContext, { SobDBSchema } from '../context/db-context';
+import DbContext, { SobDB, SobDBSchema } from '../context/db-context';
 
 export default function DbProvider({ initialKeyvalsForTest = undefined, children }: {
   initialKeyvalsForTest?: object | undefined;
   children: ReactNode;
 }): JSX.Element {
-  const [db, setDb] = useState(null);
+  const [db, setDb] = useState<SobDB | undefined>(undefined);
 
   useEffect(() => {
     let mounted = true;
@@ -45,9 +45,9 @@ export default function DbProvider({ initialKeyvalsForTest = undefined, children
     })
 
     // On unmount:
-    return async (): Promise<void> => {
+    return (): void => {
       mounted = false;
-      (await dbPromise).close();
+      dbPromise.then(db => db.close());
     }
   }, [initialKeyvalsForTest])
 

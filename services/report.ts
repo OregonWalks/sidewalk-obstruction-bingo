@@ -37,13 +37,13 @@ function scheduleSendReports(db: SobDB): void {
         report.sending = now;
         return tx1.store.put(report);
       }));
-      const postBody = JSON.stringify(reports.map(({
-        uuid, type, tile, details, textLocation, latitude, longitude, accuracy }:
+      const postBody = JSON.stringify(reports.map(report => {
         // The funny type here tells Typescript that I mean to read fields
         // that don't exist on all the possible input types. The rest will get
         // undefined, which is what I want in the output.
-        FoundReport & CancelReport) =>
-        ({ uuid, type, tile, details, textLocation, latitude, longitude, accuracy })));
+        const { uuid, type, tile, details, textLocation, latitude, longitude, accuracy } = report as FoundReport & CancelReport;
+        return { uuid, type, tile, details, textLocation, latitude, longitude, accuracy };
+      }));
 
       // Explicitly close the transaction before the fetch, so it's not
       // ambiguous whether it closes during the fetch.
@@ -89,7 +89,7 @@ export async function queueReport(
   db: SobDB,
   uuid: string,
   tile: TileInterface,
-  { detailString, textLocation, location: { latitude, longitude, accuracy } }: TileDetails): Promise<string> {
+  { detailString, textLocation, location }: TileDetails): Promise<string> {
   const tx = db.transaction('queuedReports', 'readwrite');
   await tx.store.add({
     uuid,
@@ -99,9 +99,9 @@ export async function queueReport(
     tile: tile.alt,
     details: detailString,
     textLocation,
-    latitude,
-    longitude,
-    accuracy,
+    latitude: location?.latitude,
+    longitude: location?.longitude,
+    accuracy: location?.accuracy,
   });
   await tx.done;
   scheduleSendReports(db);

@@ -9,12 +9,12 @@ export interface TileInterface {
   //** idb-keyval key to store extra data used by the tile. */
   idbKey?: string;
   /** React component to ask the user for more detail about why they marked this tile. */
-  describe?: (props: { detailString: string; setDetailString: (s: string) => void }) => JSX.Element;
+  describe?: React.FC<{ detailString: string | undefined; setDetailString: (s: string) => void }>;
   /** React component to render the user's answer over the main tile. */
-  show?: (props: object) => JSX.Element;
+  show?: React.FC<{ detailString: string | undefined }>;
 }
 
-function DescribeAddYourOwn({ detailString, setDetailString }: { detailString: string; setDetailString: (newValue: string) => void }): JSX.Element {
+function DescribeAddYourOwn({ detailString, setDetailString }: { detailString: string | undefined; setDetailString: (newValue: string) => void }): JSX.Element {
   return <div>
     <label>What obstruction did you find?
     <input type="text" value={detailString} onChange={(event): void => { setDetailString(event.target.value); }} />
@@ -22,7 +22,7 @@ function DescribeAddYourOwn({ detailString, setDetailString }: { detailString: s
   </div>
 }
 
-function ShowAddYourOwn(props: { detailString: string }): JSX.Element {
+function ShowAddYourOwn(props: { detailString: string | undefined }): JSX.Element {
   return <div style={{ width: "100%", height: "100%" }}>
     {props.detailString}
   </div>
