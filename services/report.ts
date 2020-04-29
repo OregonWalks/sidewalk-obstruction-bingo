@@ -1,5 +1,5 @@
 import { TileDetails } from "../components/gather-tile-details-modal";
-import { CancelReport, FoundReport, SobDB } from '../context/db-context';
+import { CancelReport, FoundReport, SobDB } from './db-schema';
 import { TileInterface } from "./tiles";
 
 const reportAppScriptUrl =

@@ -11,11 +11,10 @@ export interface TileDetails {
   detailString?: string;
 }
 
-export function GatherTileDetailsModal({ tile, sendReports = false, autoLocation, setAutoLocation, onReport, onDontReport, onCancel }: {
+export function GatherTileDetailsModal({ tile, sendReports = false, autoLocation, onReport, onDontReport, onCancel }: {
   tile: TileInterface | null;
   sendReports: boolean | undefined;
   autoLocation: boolean | undefined;
-  setAutoLocation: (b: boolean) => void;
   onReport: (details: TileDetails) => void;
   onDontReport: () => void;
   onCancel: () => void;
@@ -31,7 +30,7 @@ export function GatherTileDetailsModal({ tile, sendReports = false, autoLocation
   return <Modal show={tile != null && sendReports}>
     <GetLocation location={location} setLocation={setLocation}
       textLocation={textLocation} setTextLocation={setTextLocation}
-      autoLocation={autoLocation} setAutoLocation={setAutoLocation}></GetLocation>
+      autoLocation={autoLocation} ></GetLocation>
     {tile?.describe?.({ detailString, setDetailString })}
     <Modal.Footer>
       <Button variant="secondary" onClick={onCancel}>Cancel</Button>

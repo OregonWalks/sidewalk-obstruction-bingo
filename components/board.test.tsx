@@ -1,13 +1,16 @@
 import { fireEvent, render, within } from '@testing-library/react';
 import React, { PropsWithChildren } from 'react';
+import { Provider } from 'react-redux';
+import store from '../store';
 import Board from './board';
-import DbProvider from './db-provider';
+import DbLoader from './db-loader';
 
 function Wrapper({ children }: PropsWithChildren<{}>): JSX.Element {
   // Have clicks on the board not pop up a dialog asking what location to report.
-  return <DbProvider initialKeyvalsForTest={{ "send-reports": false }}>
+  return <Provider store={store}>
+    <DbLoader initialKeyvalsForTest={{ "send-reports": false }} />
     {children}
-  </DbProvider>
+  </Provider>
 }
 
 test('can bingo', async () => {

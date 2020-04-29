@@ -1,7 +1,5 @@
-/** A type that's only used by converting it to boolean. */
-type ToBoolean = unknown;
 
-function checkLine(matched: ToBoolean[], start: number, increment: number): boolean {
+function checkLine(matched: boolean[], start: number, increment: number): boolean {
   for (let i = 0; i < 5; ++i) {
     if (!matched[start + i * increment]) return false;
   }
@@ -11,7 +9,7 @@ function checkLine(matched: ToBoolean[], start: number, increment: number): bool
 /**
  * @param matched is a 25-element boolean array representing the marked spaces on the Bingo board.
  */
-export function wonBingo(matched: ToBoolean[]): boolean {
+export function wonBingo(matched: boolean[]): boolean {
   // Horizontal:
   for (const start of [0, 5, 10, 15, 20]) {
     if (checkLine(matched, start, 1)) return true;

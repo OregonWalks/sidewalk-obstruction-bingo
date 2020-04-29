@@ -14,7 +14,7 @@ test('shows a simple unmatched tile', async () => {
   const toggleMatchedCalls: number[] = [];
   function toggleMatched(index: number): void { toggleMatchedCalls.push(index); }
   const { findByAltText } =
-    render(<Tile tileindex={1} tileid={3} matched={null} onToggleMatched={toggleMatched} />, {
+    render(<Tile tileindex={1} tileid={3} matched={false} onToggleMatched={toggleMatched} />, {
       container: tr(),
     });
 

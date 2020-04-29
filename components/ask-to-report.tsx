@@ -1,6 +1,8 @@
 import React, { useCallback } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import { useDispatch } from 'react-redux';
+import { setSendReports } from '../store/configSlice';
 
 export interface TileDetails {
   location: Coordinates | null;
@@ -9,18 +11,18 @@ export interface TileDetails {
   detailString: string | null;
 }
 
-export function AskToReport({ show, sendReports, setSendReports }: {
+export function AskToReport({ show, sendReports }: {
   show: boolean;
   sendReports: boolean | undefined;
-  setSendReports: (b: boolean) => void;
 }): JSX.Element {
+  const dispatch = useDispatch();
   const clickSendReports = useCallback(() => {
-    setSendReports(true);
-  }, [setSendReports]);
+    dispatch(setSendReports(true));
+  }, [dispatch]);
 
   const clickDontSendReports = useCallback(() => {
-    setSendReports(false);
-  }, [setSendReports]);
+    dispatch(setSendReports(false));
+  }, [dispatch]);
 
   return <Modal show={show && sendReports === undefined}>
     <Modal.Title>

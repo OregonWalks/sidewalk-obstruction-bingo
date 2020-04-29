@@ -1,12 +1,15 @@
 import React, { useCallback, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { useDispatch } from 'react-redux';
+import { setAutoLocation } from '../store/configSlice';
 
-export default function GetLocation({ location, setLocation, textLocation, setTextLocation, autoLocation, setAutoLocation }: {
+export default function GetLocation({ location, setLocation, textLocation, setTextLocation, autoLocation }: {
   location?: Coordinates; setLocation: (coords: Coordinates | undefined) => void;
   textLocation: string; setTextLocation: (loc: string) => void;
-  autoLocation?: boolean; setAutoLocation: (_: boolean) => void;
+  autoLocation?: boolean;
 }): JSX.Element {
+  const dispatch = useDispatch();
 
   // True if the user has asked for their location in this instance of the dialog.
   const [geolocated, setGeolocated] = useState(false);
@@ -18,8 +21,8 @@ export default function GetLocation({ location, setLocation, textLocation, setTe
   }, [setTextLocation, setLocation]);
 
   const onAutoLocationChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setAutoLocation(event.target.checked);
-  }, [setAutoLocation])
+    dispatch(setAutoLocation(event.target.checked));
+  }, [dispatch])
 
   const useCurrentLocation = useCallback(() => {
     navigator.geolocation.getCurrentPosition((position) => {

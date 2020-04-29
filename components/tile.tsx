@@ -4,7 +4,7 @@ import TILES from '../services/tiles';
 export default function Tile({ tileindex, tileid, matched, onToggleMatched }: {
   tileindex: number;
   tileid: number;
-  matched: string | null;
+  matched: boolean;
   onToggleMatched: (tileindex: number) => void;
 }): JSX.Element {
   const tile = TILES[tileid];
@@ -14,7 +14,7 @@ export default function Tile({ tileindex, tileid, matched, onToggleMatched }: {
     [onToggleMatched, tileindex]);
 
   let drawMatched = null;
-  if (matched !== null) {
+  if (matched) {
     drawMatched = <img alt="Marked" src="tiles/marked.svg"
       width="150" height="150"
       style={{

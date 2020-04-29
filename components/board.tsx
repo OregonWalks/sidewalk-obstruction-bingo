@@ -1,81 +1,91 @@
 import pushid from 'pushid';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import DbContext, { SobDB } from '../context/db-context';
-import useIdbKeyval from '../hooks/use-idb-keyval';
-import useTileStorage from "../hooks/use-tile-storage";
+import { useDispatch, useSelector } from 'react-redux';
 import { wonBingo } from "../services/bingo";
+import { SobDB } from '../services/db-schema';
 import { queueReport, tryUnqueueReport } from "../services/report";
 import TILES from "../services/tiles";
+import { RootState } from '../store';
+import { generateNewBoard, matchToggled, TilesState } from '../store/boardSlice';
 import { AskToReport } from './ask-to-report';
 import { GatherTileDetailsModal, TileDetails } from "./gather-tile-details-modal";
 import Tile from "./tile";
 
-export default function Board(): JSX.Element {
-  const db: SobDB | undefined = useContext(DbContext);
-  const { tileorder, matched, setMatched, unsetMatched, newBoard } = useTileStorage();
+export default function BoardOrLoading(): JSX.Element {
+  const { db, board, config } = useSelector((state: RootState) => state);
 
+  if (db.state === "loading" || board.isLoading || config.state === "loading") {
+    return <h1>Loading...</h1>;
+  }
+
+  return <LoadedBoard db={db.db}
+    boardState={board}
+    sendReports={config.sendReports}
+    autoLocation={config.autoLocation} />;
+}
+
+function LoadedBoard({ db, boardState, sendReports, autoLocation }: {
+  db: SobDB;
+  boardState: TilesState;
+  sendReports: boolean | undefined;
+  autoLocation: boolean;
+}): JSX.Element {
+  const dispatch = useDispatch();
   const [clickedTile, setClickedTile] = useState<number | null>(null);
-  const [sendReports, setSendReports] = useIdbKeyval<boolean | undefined>("send-reports", undefined);
-  const [autoLocation, setAutoLocation] = useIdbKeyval("auto-location", false);
 
-  const onToggleMatched = useCallback((tileindex: number) => {
-    if (db === undefined || matched === null) throw new Error("Can't happen");
-    const matchedtile = matched[tileindex];
-    if (matchedtile !== null) {
-      tryUnqueueReport(db, matchedtile);
-      unsetMatched(tileindex);
+  const onToggleMatched = useCallback((tileIndex: number) => {
+    const matchedtile = boardState.matched[tileIndex];
+    if (matchedtile.match) {
+      if (matchedtile.reportId !== undefined) {
+        tryUnqueueReport(db, matchedtile.reportId);
+      }
+      dispatch(matchToggled({ tileIndex, newmatch: false }));
     } else {
       if (sendReports === false) {
-        setMatched(tileindex, "No report");
+        dispatch(matchToggled({ tileIndex, newmatch: true }));
       } else {
-        setClickedTile(tileindex);
+        setClickedTile(tileIndex);
       }
     }
-  }, [db, setClickedTile, sendReports, setMatched, matched, unsetMatched]);
+  }, [dispatch, db, setClickedTile, sendReports, boardState.matched]);
 
   const onGotTileDetails = useCallback((tileDetails: TileDetails) => {
-    if (db === undefined || tileorder === null) throw new Error("Can't happen");
     if (clickedTile === null) {
       throw new Error("Can't happen: got tile details with a null clickedTile.");
     }
     setClickedTile(null);
     const uuid = pushid();
-    setMatched(clickedTile, uuid);
-    queueReport(db, uuid, TILES[tileorder[clickedTile]], tileDetails)
-  }, [db, clickedTile, tileorder, setMatched])
+    dispatch(matchToggled({ tileIndex: clickedTile, newmatch: true, reportId: uuid }));
+    queueReport(db, uuid, TILES[boardState.tileorder[clickedTile]], tileDetails)
+  }, [dispatch, db, clickedTile, boardState.tileorder]);
 
   const onDontReportTileDetails = useCallback(() => {
     if (clickedTile === null) {
       throw new Error("Can't happen: got tile details with a null clickedTile.");
     }
     setClickedTile(null);
-    const uuid = pushid();
-    setMatched(clickedTile, uuid);
-  }, [clickedTile, setMatched])
+    dispatch(matchToggled({ tileIndex: clickedTile, newmatch: true }));
+  }, [dispatch, clickedTile]);
 
   const onCanceledTileDetails = useCallback(() => {
     setClickedTile(null);
   }, [setClickedTile])
 
-  if (tileorder === null || matched === null) {
-    return <h1>Loading...</h1>;
-  }
-
-  let board: JSX.Element;
-  if (wonBingo(matched)) {
-    board = <img src="/you_won.gif" alt="You Won!"></img>;
+  let result: JSX.Element;
+  if (wonBingo(boardState.matched.map(matchDetails => matchDetails.match))) {
+    result = <img src="/you_won.gif" alt="You Won!"></img>;
   } else {
-    board = <table style={{ flex: "1 auto", height: "90%" }}>
+    result = <table style={{ flex: "1 auto", height: "90%" }}>
       <tbody>
         {[0, 1, 2, 3, 4].map(row =>
           <tr key={row}>
             {[0, 1, 2, 3, 4].map(col => {
               const flatIndex = row * 5 + col;
               return <Tile key={col} tileindex={flatIndex}
-                tileid={tileorder[flatIndex]}
-                matched={matched[flatIndex]}
+                tileid={boardState.tileorder[flatIndex]}
+                matched={boardState.matched[flatIndex].match}
                 onToggleMatched={onToggleMatched}></Tile>
             })}
           </tr>
@@ -85,15 +95,15 @@ export default function Board(): JSX.Element {
   }
 
   return <>
-    {board}
-    <AskToReport show={clickedTile != null} sendReports={sendReports} setSendReports={setSendReports} />
-    <GatherTileDetailsModal tile={clickedTile === null ? null : TILES[tileorder[clickedTile]]}
+    {result}
+    <AskToReport show={clickedTile != null} sendReports={sendReports} />
+    <GatherTileDetailsModal tile={clickedTile === null ? null : TILES[boardState.tileorder[clickedTile]]}
       onReport={onGotTileDetails} onDontReport={onDontReportTileDetails} onCancel={onCanceledTileDetails}
       sendReports={sendReports}
-      autoLocation={autoLocation} setAutoLocation={setAutoLocation} />
+      autoLocation={autoLocation}/>
     <Card>
       <Card.Header>
-        <Button variant="primary" block onClick={newBoard}>Generate a new board</Button>
+        <Button variant="primary" block onClick={generateNewBoard}>Generate a new board</Button>
       </Card.Header>
     </Card>
   </>;

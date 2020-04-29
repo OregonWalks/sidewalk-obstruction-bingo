@@ -1,12 +1,15 @@
 import { openDB } from 'idb';
-import React, { ReactNode, useEffect, useState } from 'react';
-import DbContext, { SobDB, SobDBSchema } from '../context/db-context';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { SobDBSchema } from '../services/db-schema';
+import { loadBoard } from '../store/boardSlice';
+import { loadConfig } from '../store/configSlice';
+import { setDb } from '../store/dbSlice';
 
-export default function DbProvider({ initialKeyvalsForTest = undefined, children }: {
+export default function DbLoader({ initialKeyvalsForTest = undefined }: {
   initialKeyvalsForTest?: object | undefined;
-  children: ReactNode;
 }): JSX.Element {
-  const [db, setDb] = useState<SobDB | undefined>(undefined);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     let mounted = true;
@@ -38,20 +41,27 @@ export default function DbProvider({ initialKeyvalsForTest = undefined, children
       },
     });
 
-    dbPromise.then(db => {
+    async function loadDb(): Promise<void> {
+      const db = await dbPromise;
+
+      const [configLoaded, boardLoaded] = await Promise.all([
+        loadConfig(db),
+        loadBoard(db),
+      ]);
       if (mounted) {
-        setDb(db);
+        dispatch(setDb(db));
+        dispatch(configLoaded);
+        dispatch(boardLoaded);
       }
-    })
+    }
+    loadDb();
 
     // On unmount:
     return (): void => {
       mounted = false;
       dbPromise.then(db => db.close());
     }
-  }, [initialKeyvalsForTest])
+  }, [dispatch, initialKeyvalsForTest])
 
-  return <DbContext.Provider value={db}>
-    {children}
-  </DbContext.Provider>
+  return <></>;
 }
