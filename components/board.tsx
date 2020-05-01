@@ -73,6 +73,10 @@ function LoadedBoard({ db, boardState, sendReports, autoLocation }: {
     setClickedTile(null);
   }, [setClickedTile])
 
+  const generateBoard = useCallback(() => {
+    dispatch(generateNewBoard());
+  }, [dispatch]);
+
   let result: JSX.Element;
   if (wonBingo(boardState.matched.map(matchDetails => matchDetails.match))) {
     result = <img src="/you_won.gif" alt="You Won!"></img>;
@@ -103,7 +107,7 @@ function LoadedBoard({ db, boardState, sendReports, autoLocation }: {
       autoLocation={autoLocation}/>
     <Card>
       <Card.Header>
-        <Button variant="primary" block onClick={generateNewBoard}>Generate a new board</Button>
+        <Button variant="primary" block onClick={generateBoard}>Generate a new board</Button>
       </Card.Header>
     </Card>
   </>;
