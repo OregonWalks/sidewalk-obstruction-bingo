@@ -97,6 +97,7 @@ export default function Tile({ tileindex, tileid, matched }: {
           tryUnqueueReport(db.db, matched.reportId);
         }
         dispatch(matchToggled({ tileIndex: tileindex, newmatch: false }));
+        setState(TileState.UNMATCHED);
         break;
       }
       case TileState.UNMATCHED_CLICKED: {

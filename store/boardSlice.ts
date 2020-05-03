@@ -89,14 +89,14 @@ export const matchToggled = createAsyncThunk<MatchToggleDetails, MatchToggleDeta
     const matched = await tx.store.get("matched") as MatchDetails[];
     const oldMatch = matched[matchDetails.tileIndex];
     if (oldMatch.match == matchDetails.newmatch) {
-      throw new Error(`Toggling match with details ${matchDetails} didn't change match state.\n` +
-        `Old state: ${oldMatch}`);
+      throw new Error(`Toggling match with details ${JSON.stringify(matchDetails)} didn't change match state.\n` +
+        `Old state: ${JSON.stringify(oldMatch)}`);
     }
     if (matchDetails.newmatch) {
       oldMatch.match = true;
       oldMatch.reportId = matchDetails.reportId;
     } else {
-      oldMatch.match = true;
+      oldMatch.match = false;
       oldMatch.reportId = undefined;
     }
     tx.store.put(matched, "matched");
@@ -162,7 +162,10 @@ const board = createSlice({
       } else {
         match.reportId = undefined;
       }
-    })
+    });
+    builder.addCase(matchToggled.rejected, (state, action): void => {
+      throw action.error;
+    });
   },
 });
 
