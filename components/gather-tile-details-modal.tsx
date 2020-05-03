@@ -39,8 +39,10 @@ export function GatherTileDetailsModal({ tile, tileDetails, setTileDetails,
     </Modal.Body>
     <Modal.Footer>
       <Button variant="secondary" onClick={onCancel}>Cancel</Button>
-      <Button variant="secondary" onClick={onDontReport}>Don&apos;t Report</Button>
-      <Button variant="primary" onClick={clickReport}>Report</Button>
+      <Button variant={sendReports ? "secondary" : "primary"} onClick={onDontReport}>
+        {sendReports ? "Don't Share" : "Ok"}
+      </Button>
+      {sendReports && <Button variant="primary" onClick={clickReport}>Share</Button>}
     </Modal.Footer>
 
   </Modal>;

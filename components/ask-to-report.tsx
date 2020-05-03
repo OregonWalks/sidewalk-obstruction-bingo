@@ -39,8 +39,8 @@ export function AskToReport({ onDone: onHide }: {
         </p>
     </Modal.Body>
     <Modal.Footer>
-      <Button variant="primary" onClick={clickSendReports}>Report</Button>
-      <Button variant="primary" onClick={clickDontSendReports}>Don&apos;t Report</Button>
+      <Button variant="primary" onClick={clickSendReports}>Share</Button>
+      <Button variant="primary" onClick={clickDontSendReports}>Don&apos;t Share</Button>
     </Modal.Footer>
   </Modal>;
 }
