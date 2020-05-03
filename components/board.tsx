@@ -107,7 +107,7 @@ function LoadedBoard({ db, boardState, sendReports, autoLocation }: {
       autoLocation={autoLocation}/>
     <Card>
       <Card.Header>
-        <Button variant="primary" block onClick={generateBoard}>Generate a new board</Button>
+        <Button variant="primary" size="sm" block onClick={generateBoard}>Generate a new board</Button>
       </Card.Header>
     </Card>
   </>;

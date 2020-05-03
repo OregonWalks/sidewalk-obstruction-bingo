@@ -24,5 +24,11 @@ a {
 }
 
 .banner {
+    max-width: 100%;
     margin: 10px 20px;
+}
+
+.banner img {
+    object-fit: contain;
+    width: 100%;
 }
