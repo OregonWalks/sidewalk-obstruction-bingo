@@ -51,7 +51,7 @@ export default function GetLocation({ location, setLocation, textLocation, setTe
   }
 
   return <>
-    <Form.Group controlId="obstructin-location">
+    <Form.Group controlId="obstruction-location">
       <Form.Label>Where did you find this obstruction?</Form.Label>
       <Form.Control type="input" placeholder="1234 Main St." value={textLocation} onChange={onChangeLocation} />
     </Form.Group>
