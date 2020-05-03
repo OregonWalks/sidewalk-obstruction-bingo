@@ -3,7 +3,7 @@ import { SobDB } from '../services/db-schema';
 import { DbState } from './dbSlice';
 
 
-interface MatchDetails {
+export interface MatchDetails {
   match: boolean;
   pending: boolean;
   reportId?: string;
@@ -116,6 +116,18 @@ const board = createSlice({
         matched: action.payload.matched,
       };
     },
+    tilePendingClickResolution(state, action: PayloadAction<number>): void {
+      if (state.isLoading) {
+        throw new Error("Can't have a tile click while the board is loading.");
+      }
+      state.matched[action.payload].pending = true;
+    },
+    tileClickCancelled(state, action: PayloadAction<number>): void {
+      if (state.isLoading) {
+        throw new Error("Can't have a tile click while the board is loading.");
+      }
+      state.matched[action.payload].pending = false;
+    },
   },
   extraReducers: builder => {
     builder.addCase(generateNewBoard.pending, (): BoardState => {
@@ -166,5 +178,7 @@ export async function loadBoard(db: SobDB): Promise<PayloadAction<TilesState>> {
   }
   return board.actions.loaded({ tileorder, matched });
 }
+
+export const { tilePendingClickResolution, tileClickCancelled } = board.actions;
 
 export default board.reducer;

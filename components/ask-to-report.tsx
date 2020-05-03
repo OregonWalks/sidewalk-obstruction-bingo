@@ -11,20 +11,25 @@ export interface TileDetails {
   detailString: string | null;
 }
 
-export function AskToReport({ show, sendReports }: {
-  show: boolean;
-  sendReports: boolean | undefined;
+export function AskToReport({ onDone: onHide }: {
+  onDone: (sendReports: boolean) => void;
 }): JSX.Element {
   const dispatch = useDispatch();
   const clickSendReports = useCallback(() => {
     dispatch(setSendReports(true));
-  }, [dispatch]);
+    onHide(true);
+  }, [dispatch, onHide]);
 
   const clickDontSendReports = useCallback(() => {
     dispatch(setSendReports(false));
-  }, [dispatch]);
+    onHide(false);
+  }, [dispatch, onHide]);
 
-  return <Modal show={show && sendReports === undefined}>
+  const hide = useCallback(() => {
+    onHide(false);
+  }, [onHide]);
+
+  return <Modal show={true} onHide={hide}>
     <Modal.Title>
       Do you want to share the locations of the obstructions you find with <a href="https://oregonwalks.org/">Oregon Walks</a>?
       </Modal.Title>
@@ -34,8 +39,8 @@ export function AskToReport({ show, sendReports }: {
         </p>
     </Modal.Body>
     <Modal.Footer>
-      <Button variant="primary" onClick={clickSendReports}>Yes</Button>
-      <Button variant="primary" onClick={clickDontSendReports}>No</Button>
+      <Button variant="primary" onClick={clickSendReports}>Report</Button>
+      <Button variant="primary" onClick={clickDontSendReports}>Don&apos;t Report</Button>
     </Modal.Footer>
   </Modal>;
 }

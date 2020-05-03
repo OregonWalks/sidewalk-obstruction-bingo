@@ -1,51 +1,61 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCurrentPosition } from '../services/geolocation';
+import { RootState } from '../store';
 import { setAutoLocation } from '../store/configSlice';
+import { TileDetails } from './gather-tile-details-modal';
 
-export default function GetLocation({ location, setLocation, textLocation, setTextLocation, autoLocation }: {
-  location?: Coordinates; setLocation: (coords: Coordinates | undefined) => void;
-  textLocation: string; setTextLocation: (loc: string) => void;
-  autoLocation?: boolean;
+export default function GetLocation({ tileDetails, setTileDetails }: {
+  tileDetails: TileDetails;
+  setTileDetails: (details: TileDetails) => void;
 }): JSX.Element {
   const dispatch = useDispatch();
+  const autoLocation = useSelector((state: RootState) =>
+    state.config.state === "ready" && state.config.autoLocation);
+
+  const [gettingLocation, setGettingLocation] = useState(false);
 
   // True if the user has asked for their location in this instance of the dialog.
   const [geolocated, setGeolocated] = useState(false);
   //const [geolocationError, setGeolocationError] = useState<PositionError>(null);
 
   const onChangeLocation = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setTextLocation(event.target.value);
-    setLocation(undefined);
-  }, [setTextLocation, setLocation]);
+    setTileDetails({ ...tileDetails, textLocation: event.target.value, location: undefined })
+  }, [setTileDetails, tileDetails]);
 
   const onAutoLocationChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setAutoLocation(event.target.checked));
   }, [dispatch])
 
-  const useCurrentLocation = useCallback(() => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      setGeolocated(true);
-      setTextLocation("");
-      setLocation(position.coords);
-    }, () => {
-      //setGeolocationError(error);
-    }, {
-      maximumAge: 5000,
-      timeout: 10000,
-      enableHighAccuracy: true,
+  const getCurrentLocation = useCallback((_event?: React.MouseEvent, signal?: AbortSignal) => {
+    setGettingLocation(true);
+    setGeolocated(true);
+    getCurrentPosition().then(coords => {
+      if (signal?.aborted) {
+        return;
+      }
+      setTileDetails({ ...tileDetails, textLocation: "", location: coords })
     });
-  }, [setGeolocated, setTextLocation, setLocation]);
+  }, [setTileDetails, tileDetails]);
+
+  useEffect(() => {
+    const abort = new AbortController();
+    if (autoLocation) {
+      getCurrentLocation(undefined, abort.signal);
+    }
+    return (): void => { abort.abort(); }
+  }, [autoLocation, getCurrentLocation]);
 
   // Documentation at https://developers.google.com/maps/documentation/embed/guide#place_mode.
   const mapUrl = new URL("https://www.google.com/maps/embed/v1/place?key=AIzaSyAQ9QAtFgij7jVNf_ZelJ4eg_oq1bLt_jE");
-  if (location) {
+  if (tileDetails.location) {
     // This lat/lng format was guessed from
     // https://developers.google.com/maps/documentation/urls/guide#search-action.
-    mapUrl.searchParams.append("q", `${location.latitude},${location.longitude}`);
-  } else if (textLocation) {
-    mapUrl.searchParams.append("q", `${textLocation} near Portland, OR`);
+    mapUrl.searchParams.append("q", `${tileDetails.location.latitude},${tileDetails.location.longitude}`);
+  } else if (tileDetails.textLocation) {
+    mapUrl.searchParams.append("q", `${tileDetails.textLocation} near Portland, OR`);
   } else {
     mapUrl.searchParams.append("q", "Portland, OR");
   }
@@ -53,9 +63,9 @@ export default function GetLocation({ location, setLocation, textLocation, setTe
   return <>
     <Form.Group controlId="obstruction-location">
       <Form.Label>Where did you find this obstruction?</Form.Label>
-      <Form.Control type="input" placeholder="1234 Main St." value={textLocation} onChange={onChangeLocation} />
+      <Form.Control type="input" placeholder="1234 Main St." value={tileDetails.textLocation} onChange={onChangeLocation} />
     </Form.Group>
-    <Button onClick={useCurrentLocation}>Use my current location</Button>
+    <Button onClick={getCurrentLocation}>Use my current location</Button>
     {geolocated &&
       <Form.Check
         type={"checkbox"}

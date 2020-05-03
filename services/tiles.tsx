@@ -28,7 +28,7 @@ function ShowAddYourOwn(props: { detailString: string | undefined }): JSX.Elemen
   </div>
 }
 
-const TILES: TileInterface[] = [
+const TILES: ReadonlyArray<TileInterface> = [
   {
     id: 0,
     image: "free_square.svg",
