@@ -5,11 +5,7 @@ import Card from 'react-bootstrap/Card';
 import Board from "../components/board";
 
 export default function Index(): JSX.Element {
-  return <main style={{
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between safe",
-  }}>
+  return <main>
     <div className='banner'>
       <img src="/banner.svg" alt="Sidewalk Obstruction Bingo"></img>
     </div>

@@ -81,7 +81,7 @@ function LoadedBoard({ db, boardState, sendReports, autoLocation }: {
   if (wonBingo(boardState.matched.map(matchDetails => matchDetails.match))) {
     result = <img src="/you_won.gif" alt="You Won!"></img>;
   } else {
-    result = <table style={{ flex: "1 auto", height: "90%" }}>
+    result = <table>
       <tbody>
         {[0, 1, 2, 3, 4].map(row =>
           <tr key={row}>
