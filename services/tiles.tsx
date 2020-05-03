@@ -12,6 +12,8 @@ export interface TileInterface {
   describe?: React.FC<{ detailString: string | undefined; setDetailString: (s: string) => void }>;
   /** React component to render the user's answer over the main tile. */
   show?: React.FC<{ detailString: string | undefined }>;
+  /** undefined for squares other than the free square. */
+  freeSquare?: true;
 }
 
 function DescribeAddYourOwn({ detailString, setDetailString }: { detailString: string | undefined; setDetailString: (newValue: string) => void }): JSX.Element {
@@ -33,6 +35,7 @@ const TILES: ReadonlyArray<TileInterface> = [
     id: 0,
     image: "free_square.svg",
     alt: "Free space",
+    freeSquare: true,
   },
   {
     id: 1,

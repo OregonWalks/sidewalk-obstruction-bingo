@@ -88,6 +88,11 @@ export default function Tile({ tileindex, tileid, matched }: {
       case TileState.UNMATCHED:
         break;
       case TileState.MATCHED_CLICKED: {
+        if (tile.freeSquare) {
+          // Ignore attempts to unmark the free square.
+          setState(TileState.MATCHED);
+          break;
+        }
         if (matched.reportId !== undefined) {
           tryUnqueueReport(db.db, matched.reportId);
         }
@@ -192,7 +197,7 @@ export default function Tile({ tileindex, tileid, matched }: {
   }
 
   let drawMatched = null;
-  if (matched.match) {
+  if (matched.match && !tile.freeSquare) {
     drawMatched = <img alt="Marked" src="tiles/marked.svg"
       style={{
         position: "absolute", left: 0, top: 0,
