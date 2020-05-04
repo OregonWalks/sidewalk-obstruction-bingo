@@ -19,8 +19,10 @@ export interface TileInterface {
 
 function DescribeAddYourOwn({ detailString, setDetailString }: { detailString: string | undefined; setDetailString: (newValue: string) => void }): JSX.Element {
   return <Form.Group>
-    <Form.Label>What obstruction did you find?</Form.Label>
-    <Form.Control type="input" value={detailString} onChange={(event: React.ChangeEvent<HTMLInputElement>): void => { setDetailString(event.target.value); }} />
+    <Form.Label> 
+      <p>What obstruction did you find?</p>
+    </Form.Label>
+    <Form.Control type="input" placeholder="Enter obstruction" value={detailString} onChange={(event: React.ChangeEvent<HTMLInputElement>): void => { setDetailString(event.target.value); }} />
   </Form.Group>;
 }
 

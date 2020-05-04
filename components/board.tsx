@@ -39,7 +39,14 @@ function LoadedBoard({ boardState }: {
 
   let result: JSX.Element;
   if (won) {
-    result = <img src="/you_won.gif" alt="You Won!" style={{ width: "100%" }}></img>;
+    result = <>
+      <img src="/you_won.gif" alt="You Won!" style={{ width: "100%" }}></img>
+      <Card>
+      <Card.Header>
+        <Button variant="primary" size="sm">You won!</Button>
+      </Card.Header>
+    </Card>
+    </>;
   } else {
     result = <table>
       <tbody>

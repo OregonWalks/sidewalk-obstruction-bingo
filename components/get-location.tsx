@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import Accordion from 'react-bootstrap/Accordion';
 import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCurrentPosition } from '../services/geolocation';
@@ -61,7 +63,45 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
   }
 
   return <>
-    <Form.Group controlId="obstruction-location">
+    <p> Where did you find this obstacle?</p>
+    <Accordion>
+      <Card>
+        <Card.Header>
+          <Accordion.Toggle as={Button} variant="primary" size="sm" eventKey="0" block>
+            Use my current location
+          </Accordion.Toggle>
+        </Card.Header>
+        <Accordion.Collapse eventKey="0">
+          <Card.Body>
+          <Form.Group><Button onClick={getCurrentLocation}>Use my current location</Button>
+    {geolocated &&
+      <Form.Check
+        type={"checkbox"}
+        label={"Always use my current location"}
+        checked={autoLocation}
+        onChange={onAutoLocationChange}
+      />}
+    <iframe src={mapUrl.href}></iframe>
+    </Form.Group>
+          </Card.Body>
+        </Accordion.Collapse>
+      </Card>
+      <Card>
+        <Card.Header>
+          <Accordion.Toggle as={Button} variant="primary" size="sm" eventKey="1" block>
+            Enter address
+          </Accordion.Toggle>
+        </Card.Header>
+        <Accordion.Collapse eventKey="1">
+          <Card.Body>
+            <Form.Control type="input" placeholder="1234 Main St." value={tileDetails.textLocation} onChange={onChangeLocation} />
+          </Card.Body>
+        </Accordion.Collapse>
+      </Card>
+    </Accordion>
+
+
+    {/* <Form.Group controlId="obstruction-location">
       <Form.Label>Where did you find this obstruction?</Form.Label>
       <Form.Control type="input" placeholder="1234 Main St." value={tileDetails.textLocation} onChange={onChangeLocation} />
     </Form.Group>
@@ -74,6 +114,6 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
         onChange={onAutoLocationChange}
       />}
     <iframe src={mapUrl.href}></iframe>
-    </Form.Group>
+    </Form.Group> */}
   </>
 }
