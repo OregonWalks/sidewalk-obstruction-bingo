@@ -5,15 +5,21 @@
 ]>
 <svg version="1.1"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-	 x="0px" y="0px" width="150px" height="150px" viewBox="-14.5 -14.5 150 150" enable-background="new -14.5 -14.5 150 150"
+	 x="0px" y="0px" width="150px" height="150px" viewBox="-16.963 -11.65 150 150" enable-background="new -16.963 -11.65 150 150"
 	 xml:space="preserve">
 <defs>
 </defs>
-<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="109.6533" y1="94.918" x2="11.3471" y2="26.0832">
+<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="-0.8276" y1="4.4854" x2="110.9028" y2="116.2158" gradientTransform="matrix(-1 0 0 -1 110.0732 120.6992)">
 	<stop  offset="0" style="stop-color:#FEC111;stop-opacity:0.75"/>
 	<stop  offset="0.0679" style="stop-color:#FCC214;stop-opacity:0.733"/>
 	<stop  offset="0.4828" style="stop-color:#F6C720;stop-opacity:0.6293"/>
 	<stop  offset="1" style="stop-color:#F4C823;stop-opacity:0.5"/>
 </linearGradient>
-<circle fill="url(#SVGID_1_)" stroke="#FEC111" cx="60.5" cy="60.5" r="60"/>
+<path fill="url(#SVGID_1_)" d="M43.878,60.35C30.369,73.859,16.86,87.368,3.351,100.877c-0.413,0.413-0.825,0.825-1.238,1.238
+	c-4.462,4.462-1.423,23.739,5.047,17.27l0,0c15.959-15.959,31.918-31.917,47.876-47.876l0,0
+	c15.546,15.546,31.093,31.093,46.639,46.639c0.413,0.413,0.825,0.825,1.238,1.238c6.47,6.47,9.509-12.808,5.047-17.27l0,0
+	C94.038,88.193,80.116,74.271,66.194,60.349v0c13.509-13.509,27.019-27.018,40.528-40.526c0.413-0.413,0.825-0.825,1.238-1.238
+	c4.462-4.462,1.423-23.739-5.047-17.27C87.178,17.05,70.775,33.459,55.04,49.194C39.493,33.647,23.945,18.1,8.398,2.553
+	C7.985,2.14,7.573,1.728,7.16,1.315c-6.47-6.47-9.509,12.808-5.047,17.27C16.035,32.506,29.957,46.428,43.878,60.35L43.878,60.35z"
+	/>
 </svg>

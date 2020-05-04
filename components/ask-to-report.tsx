@@ -30,10 +30,10 @@ export function AskToReport({ onDone: onHide }: {
   }, [onHide]);
 
   return <Modal show={true} onHide={hide}>
-    <Modal.Title>
-      Do you want to share the locations of the obstructions you find with <a href="https://oregonwalks.org/">Oregon Walks</a>?
-      </Modal.Title>
+
     <Modal.Body>
+      <h5>Do you want to share the locations of the obstructions you find with <a href="https://oregonwalks.org/">Oregon Walks</a>?</h5>
+      
       <p>
         Sharing the location will allow us to better advocate for obstacle-free sidewalks.
         </p>

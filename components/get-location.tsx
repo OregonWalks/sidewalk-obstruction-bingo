@@ -65,7 +65,7 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
       <Form.Label>Where did you find this obstruction?</Form.Label>
       <Form.Control type="input" placeholder="1234 Main St." value={tileDetails.textLocation} onChange={onChangeLocation} />
     </Form.Group>
-    <Button onClick={getCurrentLocation}>Use my current location</Button>
+    <Form.Group><Button onClick={getCurrentLocation}>Use my current location</Button>
     {geolocated &&
       <Form.Check
         type={"checkbox"}
@@ -74,5 +74,6 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
         onChange={onAutoLocationChange}
       />}
     <iframe src={mapUrl.href}></iframe>
+    </Form.Group>
   </>
 }

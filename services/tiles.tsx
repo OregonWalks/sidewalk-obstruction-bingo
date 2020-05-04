@@ -1,4 +1,5 @@
 import React from 'react';
+import Form from 'react-bootstrap/Form';
 
 export interface TileInterface {
   id: number;
@@ -17,11 +18,10 @@ export interface TileInterface {
 }
 
 function DescribeAddYourOwn({ detailString, setDetailString }: { detailString: string | undefined; setDetailString: (newValue: string) => void }): JSX.Element {
-  return <div>
-    <label>What obstruction did you find?
-    <input type="text" value={detailString} onChange={(event): void => { setDetailString(event.target.value); }} />
-    </label>
-  </div>
+  return <Form.Group>
+    <Form.Label>What obstruction did you find?</Form.Label>
+    <Form.Control type="input" value={detailString} onChange={(event: React.ChangeEvent<HTMLInputElement>): void => { setDetailString(event.target.value); }} />
+  </Form.Group>;
 }
 
 function ShowAddYourOwn(props: { detailString: string | undefined }): JSX.Element {

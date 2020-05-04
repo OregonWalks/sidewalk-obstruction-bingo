@@ -38,11 +38,11 @@ export function GatherTileDetailsModal({ tile, tileDetails, setTileDetails,
       </Form>
     </Modal.Body>
     <Modal.Footer>
-      <Button variant="secondary" onClick={onCancel}>Cancel</Button>
+      {sendReports && <Button variant="primary" onClick={clickReport}>Share</Button>}
       <Button variant={sendReports ? "secondary" : "primary"} onClick={onDontReport}>
         {sendReports ? "Don't Share" : "Ok"}
       </Button>
-      {sendReports && <Button variant="primary" onClick={clickReport}>Share</Button>}
+      <Button variant="secondary" onClick={onCancel}>Cancel</Button>
     </Modal.Footer>
 
   </Modal>;
