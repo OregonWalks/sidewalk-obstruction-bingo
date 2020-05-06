@@ -154,7 +154,7 @@ export default function Tile({ tileindex, tileid, matched }: {
           if (abortController.signal.aborted) {
             return;
           }
-          setTileDetails({ ...tileDetails, location: coords });
+          setTileDetails({ ...tileDetails, textLocation: undefined, location: coords });
           setState(TileState.DETAILS_COMPLETE);
         })
         break;

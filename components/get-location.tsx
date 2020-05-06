@@ -35,7 +35,7 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
       if (signal?.aborted) {
         return;
       }
-      setTileDetails({ ...tileDetails, textLocation: "", location: coords })
+      setTileDetails({ ...tileDetails, textLocation: undefined, location: coords })
     });
   }, [setTileDetails, tileDetails]);
 

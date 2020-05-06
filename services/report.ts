@@ -98,7 +98,7 @@ export async function queueReport(
     type: 'Found',
     tile: tile.alt,
     details: detailString,
-    textLocation,
+    textLocation: textLocation ?? "",
     latitude: location?.latitude,
     longitude: location?.longitude,
     accuracy: location?.accuracy,

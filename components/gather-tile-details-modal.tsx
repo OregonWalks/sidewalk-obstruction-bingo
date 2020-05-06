@@ -5,17 +5,20 @@ import Modal from 'react-bootstrap/Modal';
 import { TileInterface } from '../services/tiles';
 import GetLocation from './get-location';
 
-export interface TileDetails {
-  location?: Coordinates;
-  /** "" when not set. */
+export type TileDetails = ({
+  location: Coordinates;
+  textLocation?: undefined;
+} | {
+  location?: undefined;
   textLocation: string;
+}) & {
   detailString?: string;
 }
 
 export function GatherTileDetailsModal({ tile, tileDetails, setTileDetails,
   sendReports = false,
   onReport, onDontReport, onCancel }: {
-    tile: TileInterface | null;
+    tile: TileInterface;
     tileDetails: TileDetails; setTileDetails: (details: TileDetails) => void;
     sendReports: boolean | undefined;
     onReport: () => void;
