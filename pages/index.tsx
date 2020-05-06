@@ -13,7 +13,7 @@ export default function Index(): JSX.Element {
     <Accordion>
       <Card>
         <Card.Header>
-          <Accordion.Toggle as={Button} variant="primary" size="sm" eventKey="0" block>
+          <Accordion.Toggle as={Button} variant="primary" eventKey="0" block>
             How to Play
           </Accordion.Toggle>
         </Card.Header>
@@ -35,7 +35,7 @@ export default function Index(): JSX.Element {
       </Card>
       <Card>
         <Card.Header>
-          <Accordion.Toggle as={Button} variant="primary" size="sm" eventKey="1" block>
+          <Accordion.Toggle as={Button} variant="primary" eventKey="1" block>
             Report a Sidewalk Obstruction
           </Accordion.Toggle>
         </Card.Header>
