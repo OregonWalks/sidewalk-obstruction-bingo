@@ -87,11 +87,11 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
         </Card.Header>
         <Accordion.Collapse eventKey="1">
           <Card.Body>
-            <Form.Control type="input" placeholder="1234 Main St." value={tileDetails.textLocation} onChange={onChangeLocation} />
+            <Form.Control type="input" placeholder="'1234 Main St.' or 'Powell's'" value={tileDetails.textLocation} onChange={onChangeLocation} />
           </Card.Body>
         </Accordion.Collapse>
       </Card>
     </Accordion>
-    <iframe src={mapUrl.href}></iframe>
+    <iframe src={mapUrl.href} style={{ margin: 'auto', display: 'block' }}></iframe>
   </>
 }
