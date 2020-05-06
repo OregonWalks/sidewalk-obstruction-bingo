@@ -19,8 +19,6 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
 
   const [gettingLocation, setGettingLocation] = useState(false);
 
-  // True if the user has asked for their location in this instance of the dialog.
-  const [geolocated, setGeolocated] = useState(false);
   //const [geolocationError, setGeolocationError] = useState<PositionError>(null);
 
   const onChangeLocation = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,9 +29,8 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
     dispatch(setAutoLocation(event.target.checked));
   }, [dispatch])
 
-  const getCurrentLocation = useCallback((_event?: React.MouseEvent, signal?: AbortSignal) => {
+  const getCurrentLocation = useCallback((_event?: React.SyntheticEvent, signal?: AbortSignal) => {
     setGettingLocation(true);
-    setGeolocated(true);
     getCurrentPosition().then(coords => {
       if (signal?.aborted) {
         return;
@@ -67,29 +64,25 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
     <Accordion>
       <Card>
         <Card.Header>
-          <Accordion.Toggle as={Button} variant="primary" size="sm" eventKey="0" block>
+          <Accordion.Toggle as={Button} onClick={getCurrentLocation} variant="primary" size="sm" eventKey="0" block>
             Use my current location
           </Accordion.Toggle>
         </Card.Header>
         <Accordion.Collapse eventKey="0">
           <Card.Body>
-          <Form.Group><Button onClick={getCurrentLocation}>Use my current location</Button>
-    {geolocated &&
-      <Form.Check
-        type={"checkbox"}
-        label={"Always use my current location"}
-        checked={autoLocation}
-        onChange={onAutoLocationChange}
-      />}
-    <iframe src={mapUrl.href}></iframe>
-    </Form.Group>
+            <Form.Check
+              type={"checkbox"}
+              label={"Always use my current location"}
+              checked={autoLocation}
+              onChange={onAutoLocationChange}
+            />
           </Card.Body>
         </Accordion.Collapse>
       </Card>
       <Card>
         <Card.Header>
           <Accordion.Toggle as={Button} variant="primary" size="sm" eventKey="1" block>
-            Enter address
+            Enter address or location
           </Accordion.Toggle>
         </Card.Header>
         <Accordion.Collapse eventKey="1">
@@ -99,21 +92,6 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
         </Accordion.Collapse>
       </Card>
     </Accordion>
-
-
-    {/* <Form.Group controlId="obstruction-location">
-      <Form.Label>Where did you find this obstruction?</Form.Label>
-      <Form.Control type="input" placeholder="1234 Main St." value={tileDetails.textLocation} onChange={onChangeLocation} />
-    </Form.Group>
-    <Form.Group><Button onClick={getCurrentLocation}>Use my current location</Button>
-    {geolocated &&
-      <Form.Check
-        type={"checkbox"}
-        label={"Always use my current location"}
-        checked={autoLocation}
-        onChange={onAutoLocationChange}
-      />}
     <iframe src={mapUrl.href}></iframe>
-    </Form.Group> */}
   </>
 }
