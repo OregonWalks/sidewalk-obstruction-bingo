@@ -7,6 +7,8 @@ export interface MatchDetails {
   match: boolean;
   pending: boolean;
   reportId?: string;
+  /** For AddYourOwn tiles, the user-provided description of the obstruction. */
+  details?: string;
 }
 
 export interface TilesState {
@@ -76,6 +78,7 @@ type MatchToggleDetails = { tileIndex: number } & ({
 } | {
   newmatch: true;
   reportId?: string;
+  details?: string;
 });
 
 export const matchToggled = createAsyncThunk<MatchToggleDetails, MatchToggleDetails, { state: { db: DbState } }>(
@@ -92,12 +95,15 @@ export const matchToggled = createAsyncThunk<MatchToggleDetails, MatchToggleDeta
       throw new Error(`Toggling match with details ${JSON.stringify(matchDetails)} didn't change match state.\n` +
         `Old state: ${JSON.stringify(oldMatch)}`);
     }
+    oldMatch.pending = false;
     if (matchDetails.newmatch) {
       oldMatch.match = true;
       oldMatch.reportId = matchDetails.reportId;
+      oldMatch.details = matchDetails.details;
     } else {
       oldMatch.match = false;
-      oldMatch.reportId = undefined;
+      delete oldMatch.reportId;
+      delete oldMatch.details;
     }
     tx.store.put(matched, "matched");
     await tx.done;
@@ -159,8 +165,10 @@ const board = createSlice({
       match.match = action.payload.newmatch;
       if (action.payload.newmatch) {
         match.reportId = action.payload.reportId;
+        match.details = action.payload.details;
       } else {
-        match.reportId = undefined;
+        delete match.reportId;
+        delete match.details;
       }
     });
     builder.addCase(matchToggled.rejected, (state, action): void => {

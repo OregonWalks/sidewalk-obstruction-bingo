@@ -38,7 +38,11 @@ export default function Tile({ tileindex, tileid, matched }: {
   const dispatch = useDispatch();
   const [state, setState] = useState(matched.match ? TileState.MATCHED : TileState.UNMATCHED);
   const [reportId, setReportId] = useState<string | undefined>(undefined);
-  const [tileDetails, setTileDetails] = useState<TileDetails>({ textLocation: "" });
+  const [tileDetails, setTileDetails] = useState<TileDetails>({
+    textLocation: "",
+    // Ensure the input element for the add-your-own details is always "controlled".
+    detailString: tile.isAddYourOwn ? "" : undefined
+  });
 
   const config = useSelector((state: RootState) => state.config);
   const db = useSelector((state: RootState) => state.db);
@@ -174,6 +178,7 @@ export default function Tile({ tileindex, tileid, matched }: {
           tileIndex: tileindex,
           newmatch: true,
           reportId: reportId,
+          details: tileDetails.detailString,
         }));
         break;
       }
@@ -198,6 +203,7 @@ export default function Tile({ tileindex, tileid, matched }: {
   }
 
   let drawMatched = null;
+  let addYourOwnDetails = null;
   if (matched.match && !tile.freeSquare) {
     drawMatched = <img alt="Marked" src="tiles/marked.svg"
       style={{
@@ -205,6 +211,25 @@ export default function Tile({ tileindex, tileid, matched }: {
         objectFit: "contain",
         width: "100%",
       }} />;
+    if (tile.isAddYourOwn) {
+      if (matched.details === undefined) {
+        console.error("Marked Add-Your-Own tile is missing details.");
+      }
+      addYourOwnDetails = <div style={{
+        position: "absolute", left: 0, top: 0,
+        width: "100%", height: "100%",
+        // Trick for vertically aligning text is from
+        // https://css-tricks.com/vertically-center-multi-lined-text/.
+        display:"table",
+      }}>
+        <p style={{
+          display: "table-cell",
+          verticalAlign: "middle",
+          textAlign: "center",
+          fontFamily: "'Neucha', cursive",
+        }}>{matched.details}</p>
+      </div>;
+    }
   }
 
   return <td onClick={onClick} style={{ position: "relative" }}>
@@ -215,5 +240,6 @@ export default function Tile({ tileindex, tileid, matched }: {
       }} />
     {resolveClickDialog}
     {drawMatched}
+    {addYourOwnDetails}
   </td>;
 }
