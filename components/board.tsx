@@ -7,6 +7,7 @@ import { wonBingo } from "../services/bingo";
 import { RootState } from '../store';
 import { generateNewBoard, TilesState } from '../store/boardSlice';
 import Tile from "./tile";
+import Form from 'react-bootstrap/Form';
 
 const wonSelector = createSelector(
   (state: RootState) => state.board,
@@ -42,10 +43,29 @@ function LoadedBoard({ boardState }: {
     result = <>
       <img src="/you_won.gif" alt="You Won!" style={{ width: "100%" }}></img>
       <Card>
-      <Card.Header>
-        <Button variant="primary" size="sm">You won!</Button>
-      </Card.Header>
-    </Card>
+        <Card.Header>
+          <Button variant="warning" block>You won!</Button>
+        </Card.Header>
+        <Card.Body>
+          <Form>
+            <Form.Group><Form.Label>Would you like to be entered for a prize?
+        </Form.Label>
+              <Form.Group>
+                <Form.Control type="email" placeholder="Enter email" />
+              </Form.Group>
+              <Form.Group controlId='email_check'>
+                <Form.Check
+                  type={"checkbox"}
+                  label={"Add me to the Oregon Walks email list (Average or no more than x emails per month)"}
+                />
+              </Form.Group>
+            </Form.Group>
+          </Form>
+          <div className='text-right'>
+            <Button variant='primary' size='sm' style={{ marginLeft: 'auto' }}> Submit</Button>
+          </div>
+        </Card.Body>
+      </Card>
     </>;
   } else {
     result = <table>
@@ -68,7 +88,7 @@ function LoadedBoard({ boardState }: {
     {result}
     <Card>
       <Card.Header>
-        <Button variant="primary" size="sm" block onClick={generateBoard}>Generate a new board</Button>
+        <Button variant="primary" block onClick={generateBoard}>Generate a new board</Button>
       </Card.Header>
     </Card>
   </>;
