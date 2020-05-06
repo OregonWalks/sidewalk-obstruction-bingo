@@ -26,15 +26,25 @@ export function GatherTileDetailsModal({ tile, tileDetails, setTileDetails,
     onReport();
   }, [onReport])
 
-  const setDetailString = useCallback((detailString: string) => {
-    setTileDetails({ ...tileDetails, detailString })
+  const setDetailString = useCallback((event: React.ChangeEvent<HTMLInputElement>): void => {
+    setTileDetails({ ...tileDetails, detailString: event.target.value });
   }, [setTileDetails, tileDetails]);
 
   return <Modal show={true} onHide={onCancel}>
     <Modal.Body>
       <Form>
         {sendReports && <GetLocation tileDetails={tileDetails} setTileDetails={setTileDetails} />}
-        {tile?.describe?.({ detailString: tileDetails.detailString, setDetailString })}
+        {tile.isAddYourOwn &&
+          <Form.Group controlId={`${tile.id}.addYourOwnObstruction`}>
+            <Form.Label>
+              <p>What obstruction did you find?</p>
+            </Form.Label>
+            <Form.Control
+              type="input"
+              placeholder="Enter obstruction"
+              value={tileDetails.detailString}
+              onChange={setDetailString} />
+          </Form.Group>}
       </Form>
     </Modal.Body>
     <Modal.Footer>

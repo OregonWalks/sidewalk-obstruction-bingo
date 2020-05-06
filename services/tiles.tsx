@@ -1,5 +1,4 @@
 import React from 'react';
-import Form from 'react-bootstrap/Form';
 
 export interface TileInterface {
   id: number;
@@ -7,23 +6,10 @@ export interface TileInterface {
   image: string;
   /** Alt text for the image. */
   alt: string;
-  //** idb-keyval key to store extra data used by the tile. */
-  idbKey?: string;
-  /** React component to ask the user for more detail about why they marked this tile. */
-  describe?: React.FC<{ detailString: string | undefined; setDetailString: (s: string) => void }>;
-  /** React component to render the user's answer over the main tile. */
-  show?: React.FC<{ detailString: string | undefined }>;
+  /** undefined for tiles that aren't "Add Your Own" tiles. */
+  isAddYourOwn?: true;
   /** undefined for squares other than the free square. */
   freeSquare?: true;
-}
-
-function DescribeAddYourOwn({ detailString, setDetailString }: { detailString: string | undefined; setDetailString: (newValue: string) => void }): JSX.Element {
-  return <Form.Group>
-    <Form.Label> 
-      <p>What obstruction did you find?</p>
-    </Form.Label>
-    <Form.Control type="input" placeholder="Enter obstruction" value={detailString} onChange={(event: React.ChangeEvent<HTMLInputElement>): void => { setDetailString(event.target.value); }} />
-  </Form.Group>;
 }
 
 function ShowAddYourOwn(props: { detailString: string | undefined }): JSX.Element {
@@ -43,17 +29,13 @@ const TILES: ReadonlyArray<TileInterface> = [
     id: 1,
     image: "add_your_own_1.svg",
     alt: "Add your own",
-    idbKey: "add-your-own-1",
-    describe: DescribeAddYourOwn,
-    show: ShowAddYourOwn,
+    isAddYourOwn:true,
   },
   {
     id: 2,
     image: "add_your_own_2.svg",
     alt: "Add your own",
-    idbKey: "add-your-own-1",
-    describe: DescribeAddYourOwn,
-    show: ShowAddYourOwn,
+    isAddYourOwn:true,
   },
   {
     id: 3,

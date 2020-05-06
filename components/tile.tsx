@@ -124,7 +124,7 @@ export default function Tile({ tileindex, tileid, matched }: {
       }
       case TileState.DECIDE_HOW_TO_GET_DETAILS_REPORT: {
         setReportId(pushid());
-        if (!autoLocation || tile.describe !== undefined) {
+        if (!autoLocation || tile.isAddYourOwn) {
           setState(TileState.GET_DETAILS);
         } else {
           setState(TileState.GETTING_LOCATION);
@@ -133,7 +133,7 @@ export default function Tile({ tileindex, tileid, matched }: {
       }
       case TileState.DECIDE_HOW_TO_GET_DETAILS_NOREPORT: {
         setReportId(undefined);
-        if (tile.describe !== undefined) {
+        if (tile.isAddYourOwn) {
           setState(TileState.GET_DETAILS);
         } else {
           setState(TileState.DETAILS_COMPLETE);
