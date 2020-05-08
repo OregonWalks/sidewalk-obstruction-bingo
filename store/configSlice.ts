@@ -73,4 +73,6 @@ export async function loadConfig(db: SobDB): Promise<PayloadAction<ConfigLoadedP
 
 }
 
+export const { loaded: configLoadedForTest } = config.actions;
+
 export default config.reducer;

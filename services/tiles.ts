@@ -1,5 +1,3 @@
-import React from 'react';
-
 export interface TileInterface {
   id: number;
   /** Path relative to the public/tiles directory. */
@@ -10,12 +8,6 @@ export interface TileInterface {
   isAddYourOwn?: true;
   /** undefined for squares other than the free square. */
   freeSquare?: true;
-}
-
-function ShowAddYourOwn(props: { detailString: string | undefined }): JSX.Element {
-  return <div style={{ width: "100%", height: "100%" }}>
-    {props.detailString}
-  </div>
 }
 
 const TILES: ReadonlyArray<TileInterface> = [

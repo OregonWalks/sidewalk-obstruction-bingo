@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
@@ -17,8 +17,6 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
   const autoLocation = useSelector((state: RootState) =>
     state.config.state === "ready" && state.config.autoLocation);
 
-  const [gettingLocation, setGettingLocation] = useState(false);
-
   //const [geolocationError, setGeolocationError] = useState<PositionError>(null);
 
   const onChangeLocation = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,7 +28,6 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
   }, [dispatch])
 
   const getCurrentLocation = useCallback((_event?: React.SyntheticEvent, signal?: AbortSignal) => {
-    setGettingLocation(true);
     getCurrentPosition().then(coords => {
       if (signal?.aborted) {
         return;

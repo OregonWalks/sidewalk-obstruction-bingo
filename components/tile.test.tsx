@@ -1,7 +1,11 @@
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
-import store from '../store';
+import { SobDB } from '../services/db-schema';
+import { createNewStoreForTest } from '../store';
+import { boardLoadedForTest } from '../store/boardSlice';
+import { configLoadedForTest } from '../store/configSlice';
+import { setDb } from '../store/dbSlice';
 import Tile from './tile';
 
 function tr(): HTMLTableRowElement {
@@ -12,9 +16,19 @@ function tr(): HTMLTableRowElement {
   return tr;
 }
 
+
 test('shows a simple unmatched tile', async () => {
-  const toggleMatchedCalls: number[] = [];
-  function toggleMatched(index: number): void { toggleMatchedCalls.push(index); }
+  const store = createNewStoreForTest();
+  store.dispatch(setDb("TODO: put a fake DB here" as unknown as SobDB));
+  store.dispatch(boardLoadedForTest({
+    tileorder: [5, 6],
+    matched: [
+      { match: false, pending: false },
+      { match: false, pending: false },
+    ],
+  }));
+  store.dispatch(configLoadedForTest({ sendReports: false, autoLocation: true }));
+
   const { findByAltText } =
     render(<Provider store={store}>
       <Tile tileindex={1} tileid={3} matched={{ match: false, pending: false }} />
@@ -23,6 +37,9 @@ test('shows a simple unmatched tile', async () => {
     });
 
   fireEvent.click(await findByAltText('A-frame sign'));
+  await findByAltText('Marked');
 
-  expect(toggleMatchedCalls).toStrictEqual([1]);
+  const board = store.getState().board;
+  if (board.isLoading) throw new Error("Can't happen");
+  expect(board.matched[1]).toEqual({ match: true, pending: false });
 });

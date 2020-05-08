@@ -190,6 +190,6 @@ export async function loadBoard(db: SobDB): Promise<PayloadAction<TilesState>> {
   return board.actions.loaded({ tileorder, matched });
 }
 
-export const { tilePendingClickResolution, tileClickCancelled } = board.actions;
+export const { tilePendingClickResolution, tileClickCancelled, loaded: boardLoadedForTest } = board.actions;
 
 export default board.reducer;
