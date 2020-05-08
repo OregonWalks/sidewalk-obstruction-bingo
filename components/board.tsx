@@ -1,13 +1,13 @@
 import { createSelector } from '@reduxjs/toolkit';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
+import Form from 'react-bootstrap/Form';
 import { useDispatch, useSelector } from 'react-redux';
 import { wonBingo } from "../services/bingo";
 import { RootState } from '../store';
 import { generateNewBoard, TilesState } from '../store/boardSlice';
 import Tile from "./tile";
-import Form from 'react-bootstrap/Form';
 
 const wonSelector = createSelector(
   (state: RootState) => state.board,
@@ -38,10 +38,21 @@ function LoadedBoard({ boardState }: {
 
   const won = useSelector(wonSelector);
 
+  const youWonImg = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    if (youWonImg.current !== null) {
+      // Restart the animation, using the technique endorsed by
+      // https://html.spec.whatwg.org/multipage/images.html#reacting-to-dom-mutations.
+      // eslint-disable-next-line no-self-assign
+      youWonImg.current.src = youWonImg.current.src;
+    }
+  }, [won]);
+
   let result: JSX.Element;
   if (won) {
     result = <>
-      <img src="/you_won.gif" alt="You Won!" style={{ width: "100%" }}></img>
+      <img ref={youWonImg} src="/you_won.gif" alt="You Won!" style={{ width: "100%" }}></img>
       <Card>
         <Card.Header>
           <Button variant="warning" block>You won!</Button>
