@@ -23,7 +23,7 @@ export default function Index(): JSX.Element {
             <li><p>{"Go for a walk. When you see a sidewalk obstruction, tap it on the board. If you don't get a bingo in one walk, don't fret! "}
               {"Your browser will remember your squares so you can keep going for walks until you get a bingo."}</p></li>
             <li><p>
-              {"When you get a bingo, you'll have the option to enter your information to join a raffle."}
+              {"When you get a bingo, you'll have the option to enter your information for a prize drawing."}
             </p></li>
             <li><p>
               {"If you decide to start a new board, the tiles will re-shuffle so your card will look different every time you play."}
