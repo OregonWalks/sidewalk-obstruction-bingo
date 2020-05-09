@@ -57,7 +57,7 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
   }
 
   return <>
-    <p> Where did you find this obstacle?</p>
+    <p> Where did you find this obstruction?</p>
     <Accordion>
       <Card>
         <Card.Header>
@@ -79,7 +79,7 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
       <Card>
         <Card.Header>
           <Accordion.Toggle as={Button} variant="primary" size="sm" eventKey="1" block>
-            Enter address or location
+            Enter address or landmark
           </Accordion.Toggle>
         </Card.Header>
         <Accordion.Collapse eventKey="1">
@@ -89,6 +89,8 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
         </Accordion.Collapse>
       </Card>
     </Accordion>
-    <iframe src={mapUrl.href} style={{ margin: 'auto', display: 'block' }}></iframe>
+    <div style={{margin: '20px'}}>
+      <iframe src={mapUrl.href} style={{ width: '100%', display: 'block' }}></iframe>
+    </div>
   </>
 }
