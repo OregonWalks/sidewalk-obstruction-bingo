@@ -53,9 +53,11 @@ function LoadedBoard({ boardState }: {
   if (won) {
     result = <>
       <img ref={youWonImg} src="/you_won.gif" alt="You Won!" style={{ width: "100%" }}></img>
-      <Card>
-        <Card.Header>
-          <Button variant="warning" block>You won!</Button>
+      <Card
+        border='warning'
+        style={{ margin: '12px 20px' }}>
+        <Card.Header className="text-center" as='h3'>
+          You won!
         </Card.Header>
         <Card.Body>
           <Form>
@@ -73,7 +75,7 @@ function LoadedBoard({ boardState }: {
             </Form.Group>
           </Form>
           <div className='text-right'>
-            <Button variant='primary' size='sm' style={{ marginLeft: 'auto' }}> Submit</Button>
+            <Button variant='warning' size='sm' style={{ marginLeft: 'auto' }}> Submit</Button>
           </div>
         </Card.Body>
       </Card>
