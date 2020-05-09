@@ -36,7 +36,6 @@ export function GatherTileDetailsModal({ tile, tileDetails, setTileDetails,
   return <Modal show={true} onHide={onCancel}>
     <Modal.Body>
       <Form>
-        {sendReports && <GetLocation tileDetails={tileDetails} setTileDetails={setTileDetails} />}
         {tile.isAddYourOwn &&
           <Form.Group controlId={`${tile.id}.addYourOwnObstruction`}>
             <Form.Label>
@@ -48,6 +47,7 @@ export function GatherTileDetailsModal({ tile, tileDetails, setTileDetails,
               value={tileDetails.detailString}
               onChange={setDetailString} />
           </Form.Group>}
+        {sendReports && <GetLocation tileDetails={tileDetails} setTileDetails={setTileDetails} />}
       </Form>
     </Modal.Body>
     <Modal.Footer>
