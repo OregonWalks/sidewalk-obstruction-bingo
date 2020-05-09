@@ -8,11 +8,13 @@ type ConfigState = {
   state: "ready";
   sendReports?: boolean;
   autoLocation: boolean;
+  enteredRaffle: boolean;
 };
 
 interface ConfigLoadedPayload {
   sendReports?: boolean;
   autoLocation: boolean;
+  enteredRaffle: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -34,6 +36,7 @@ function setBoolean(actionName: string, dbName: string) {
 
 export const setSendReports = setBoolean("sendReports", "send-reports");
 export const setAutoLocation = setBoolean("autoLocation", "auto-location");
+export const setEnteredRaffle = setBoolean("enteredRaffle", "entered-raffle");
 
 const config = createSlice({
   name: 'config',
@@ -44,6 +47,7 @@ const config = createSlice({
         state: "ready",
         sendReports: action.payload.sendReports,
         autoLocation: action.payload.autoLocation,
+        enteredRaffle: action.payload.enteredRaffle,
       };
     },
   },
@@ -60,16 +64,27 @@ const config = createSlice({
       }
       state.autoLocation = action.payload;
     });
+    builder.addCase(setEnteredRaffle.fulfilled, (state, action: PayloadAction<boolean>): void => {
+      if (state.state !== "ready") {
+        throw new Error("Can't set auto-location while config is loading.");
+      }
+      state.enteredRaffle = action.payload;
+    })
   },
 });
 
 export async function loadConfig(db: SobDB): Promise<PayloadAction<ConfigLoadedPayload>> {
   const tx = db.transaction("keyval", "readonly");
-  const [sendReports, autoLocation] = await Promise.all([
+  const [sendReports, autoLocation, enteredRaffle] = await Promise.all([
     tx.store.get("send-reports"),
     tx.store.get("auto-location"),
-  ]) as [boolean | undefined, boolean | undefined];
-  return config.actions.loaded({ sendReports, autoLocation: autoLocation ?? false });
+    tx.store.get("entered-raffle"),
+  ]) as [boolean | undefined, boolean | undefined, boolean | undefined];
+  return config.actions.loaded({
+    sendReports,
+    autoLocation: autoLocation ?? false,
+    enteredRaffle: enteredRaffle ?? false
+  });
 
 }
 

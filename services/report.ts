@@ -51,6 +51,7 @@ function scheduleSendReports(db: SobDB): void {
 
       const reportTarget = new URL(reportAppScriptUrl);
       reportTarget.searchParams.append("sheet", currentSpreadsheet);
+      reportTarget.searchParams.append("action", "obstruction");
       const req = new Request(reportTarget.href, {
         method: "POST",
         headers: new Headers({
@@ -125,5 +126,32 @@ export async function tryUnqueueReport(db: SobDB, uuid: string): Promise<void> {
     // We caught it in time and can just delete the report.
     await lastMatchingReportCursor.delete();
     await tx.done;
+  }
+}
+
+export async function enterRaffle(email: string, addToList: boolean): Promise<void> {
+  const reportTarget = new URL(reportAppScriptUrl);
+  reportTarget.searchParams.append("sheet", currentSpreadsheet);
+  reportTarget.searchParams.append("action", "raffle");
+  const req = new Request(reportTarget.href, {
+    method: "POST",
+    headers: new Headers({
+      // Avoid a CORS preflight:
+      'Content-Type': 'text/plain',
+    }),
+    body: JSON.stringify({ email, addToList }),
+    credentials: "omit",
+    referrerPolicy: "origin",
+  });
+  const response = await fetch(req);
+  if (!response.ok) {
+    throw new Error(`Failed to send report: ${JSON.stringify(response)}`);
+  }
+  const { debugLog, error }: { debugLog: unknown[]; error: object } = await response.json();
+  if (error) {
+    throw new Error(`Server error: ${JSON.stringify(error)}`);
+  }
+  if (debugLog) {
+    console.log('Server debug log:', debugLog);
   }
 }
