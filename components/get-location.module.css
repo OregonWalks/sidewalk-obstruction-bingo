@@ -1,0 +1,8 @@
+.map {
+  margin: 20px;
+}
+
+.map > iframe {
+  display: block;
+  width: 100%;
+}

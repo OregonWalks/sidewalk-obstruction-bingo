@@ -8,6 +8,7 @@ import { RootState } from '../store';
 import { MatchDetails, matchToggled, tileClickCancelled, tilePendingClickResolution } from '../store/boardSlice';
 import { AskToReport } from './ask-to-report';
 import { GatherTileDetailsModal, TileDetails } from './gather-tile-details-modal';
+import styles from './tile.module.css';
 
 // The Tile is a state machine that progresses using clicks, some helper
 // dialogs, and a useLayoutEvent().
@@ -205,39 +206,19 @@ export default function Tile({ tileindex, tileid, matched }: {
   let drawMatched = null;
   let addYourOwnDetails = null;
   if (matched.match && !tile.freeSquare) {
-    drawMatched = <img alt="Marked" src="tiles/marked.svg"
-      style={{
-        position: "absolute", left: 0, top: 0,
-        objectFit: "contain",
-        width: "100%",
-      }} />;
+    drawMatched = <img alt="Marked" src="tiles/marked.svg" className={styles.markedImg} />;
     if (tile.isAddYourOwn) {
       if (matched.details === undefined) {
         console.error("Marked Add-Your-Own tile is missing details.");
       }
-      addYourOwnDetails = <div style={{
-        position: "absolute", left: 0, top: 0,
-        width: "100%", height: "100%",
-        // Trick for vertically aligning text is from
-        // https://css-tricks.com/vertically-center-multi-lined-text/.
-        display:"table",
-      }}>
-        <p style={{
-          display: "table-cell",
-          verticalAlign: "middle",
-          textAlign: "center",
-          fontFamily: "'Neucha', cursive",
-        }}>{matched.details}</p>
+      addYourOwnDetails = <div className={styles.addYourOwnDetails}>
+        <p>{matched.details}</p>
       </div>;
     }
   }
 
-  return <td onClick={onClick} style={{ position: "relative" }}>
-    <img alt={tile.alt} src={"/tiles/" + tile.image}
-      style={{
-        objectFit: "contain",
-        width: "100%",
-      }} />
+  return <td onClick={onClick} className={styles.tileCell}>
+    <img alt={tile.alt} src={`/tiles/${tile.image}`} className={styles.tileImg} />
     {resolveClickDialog}
     {drawMatched}
     {addYourOwnDetails}

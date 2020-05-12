@@ -8,6 +8,7 @@ import { getCurrentPosition } from '../services/geolocation';
 import { RootState } from '../store';
 import { setAutoLocation } from '../store/configSlice';
 import { TileDetails } from './gather-tile-details-modal';
+import style from './get-location.module.css';
 
 export default function GetLocation({ tileDetails, setTileDetails }: {
   tileDetails: TileDetails;
@@ -89,8 +90,8 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
         </Accordion.Collapse>
       </Card>
     </Accordion>
-    <div style={{margin: '20px'}}>
-      <iframe src={mapUrl.href} style={{ width: '100%', display: 'block' }}></iframe>
+    <div className={style.map}>
+      <iframe src={mapUrl.href}></iframe>
     </div>
   </>
 }

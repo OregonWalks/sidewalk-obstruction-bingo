@@ -4,10 +4,11 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Board from "../components/board";
+import styles from './index.module.css';
 
 export default function Index(): JSX.Element {
   return <main>
-    <div className='banner'>
+    <div className={styles.banner}>
       <img src="/banner.svg" alt="Sidewalk Obstruction Bingo"></img>
     </div>
 
@@ -37,9 +38,9 @@ export default function Index(): JSX.Element {
                   type="switch"
                   id="share_location"
                   label="Share the location of the obstructions I find with Oregon Walks."
-                  style={{ margin: '0px 0px 0px 4px' }}
+                  className={styles.switch}
                 />
-                <Form.Text className="text-muted" style={{ margin: '0px 0px 0px 40px' }}>
+                <Form.Text className={`text-muted ${styles.switchText}`}>
                   Sharing the location will allow us to better advocate for obstacle-free sidewalks.
                </Form.Text>
               </Form.Group>
@@ -47,7 +48,7 @@ export default function Index(): JSX.Element {
                 type="switch"
                 id="current_location"
                 label="Always use my current location when sharing obstruction locations."
-                style={{ margin: '0px 0px 0px 4px' }}
+                className={styles.switch}
               />
             </Form>
 

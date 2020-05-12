@@ -1,0 +1,34 @@
+.tileCell {
+  position: relative;
+}
+
+.tileImg {
+  object-fit: contain;
+  width: 100%;
+}
+
+.markedImg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  object-fit: contain;
+  width: 100%;
+}
+
+.addYourOwnDetailsDiv {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  /* Trick for vertically aligning text is from
+     https://css-tricks.com/vertically-center-multi-lined-text/. */
+  display: table;
+}
+
+.addYourOwnDetailsDiv p {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  font-family: "Neucha", cursive;
+}
