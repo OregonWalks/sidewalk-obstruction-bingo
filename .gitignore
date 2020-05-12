@@ -1,4 +1,6 @@
 # NextJS caches
 .next
+# NextJS export output
+/out
 
 node_modules
