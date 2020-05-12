@@ -10,15 +10,30 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node }}
-    - uses: actions/cache@v1
-      with:
-        path: ${{ github.workspace }}/.next/cache
-        key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}
-    - run: npm ci
-    - run: npx eslint --max-warnings 0 "**"
-    - run: npm run build
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - uses: actions/cache@v1
+        with:
+          path: ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}
+      - run: npm ci
+      - run: npx eslint --max-warnings 0 "**"
+      - run: npx next build
+      - run: npx next export
+      - name: Archive static site
+        uses: actions/upload-artifact@v1
+        with:
+          name: static-site-${{matrix.os}}-${{matrix.node}}
+          path: out
+      - name: Push to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ success() &&
+          github.event_name == 'push' && github.ref == 'refs/heads/main' &&
+          matrix.os == 'ubuntu-latest' && matrix.node == '14.x' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./out
+          cname: sidewalk-obstruction-bingo.yasskin.info
     #- run: npm run test:ci
