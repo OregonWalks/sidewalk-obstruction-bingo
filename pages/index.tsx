@@ -60,27 +60,27 @@ export default function Index(): JSX.Element {
               <Card>
                 <Card.Header>
                   <Accordion.Toggle as={Button} variant="light" size="sm" eventKey="0" >
-                    In iOS
-          </Accordion.Toggle>
+                    {'In iOS'}
+                  </Accordion.Toggle>
                 </Card.Header>
                 <Accordion.Collapse eventKey="0">
                   <Card.Body>
-                    In Safari, at the bottom of the page, tap the Share button (looks like a square with an arrow pointing out the top).
-                    Tap "Add to Home Screen". The "Add to Home" dialog box will appear. Choose a name, confirm the link, then click Add.
-          </Card.Body>
+                    {'In Safari, at the bottom of the page, tap the Share button (looks like a square with an arrow pointing out the top). '}
+                    {'Tap "Add to Home Screen". The "Add to Home" dialog box will appear. Choose a name, confirm the link, then click Add.'}
+                  </Card.Body>
                 </Accordion.Collapse>
               </Card>
               <Card>
                 <Card.Header>
                   <Accordion.Toggle as={Button} variant="light" size="sm" eventKey="1" >
-                    In Android
-          </Accordion.Toggle>
+                    {'In Android'}
+                  </Accordion.Toggle>
                 </Card.Header>
                 <Accordion.Collapse eventKey="1">
                   <Card.Body>
-                    In Chrome, tap the menu icon (3 dots in upper right-hand corner) and tap "Add to Home Screen".
-                    You’ll be able to enter a name for the shortcut and then Chrome will add it to your home screen.
-          </Card.Body>
+                    {'In Chrome, tap the menu icon (3 dots in upper right-hand corner) and tap "Add to Home Screen". '}
+                    {'You’ll be able to enter a name for the shortcut and then Chrome will add it to your home screen.'}
+                  </Card.Body>
                 </Accordion.Collapse>
               </Card>
             </Accordion>
