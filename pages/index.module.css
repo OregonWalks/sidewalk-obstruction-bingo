@@ -1,0 +1,17 @@
+.banner {
+  max-width: 100%;
+  margin: 10px 20px;
+}
+
+.banner img {
+  object-fit: contain;
+  width: 100%;
+}
+
+.switch {
+  margin: 0px 0px 0px 4px;
+}
+
+.switchText {
+  margin: 0px 0px 0px 40px;
+}

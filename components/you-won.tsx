@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { enterRaffle } from '../services/report';
 import { RootState } from '../store';
 import { setEnteredRaffle } from '../store/configSlice';
+import style from './you-won.module.css';
 
 export default function YouWon(): JSX.Element {
   const dispatch = useDispatch();
@@ -71,10 +72,10 @@ export default function YouWon(): JSX.Element {
   }
 
   return <>
-    <img ref={youWonImg} src="/you_won.gif" alt="You Won!" style={{ width: "100%" }}></img>
+    <img ref={youWonImg} src="/you_won.gif" alt="You Won!" className={style.wonImg}></img>
     <Card
       border='warning'
-      style={{ margin: '12px 20px' }}>
+      className={style.raffleCard}>
       <Card.Header className="text-center" as='h3'>
         You won!
       </Card.Header>
