@@ -2,6 +2,7 @@ import React from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
+import Form from 'react-bootstrap/Form';
 import Board from "../components/board";
 
 export default function Index(): JSX.Element {
@@ -20,16 +21,36 @@ export default function Index(): JSX.Element {
         <Accordion.Collapse eventKey="0">
           <Card.Body>
             <ul>
-            <li><p>{"Go for a walk. When you see a sidewalk obstruction, tap it on the board. If you don't get a bingo in one walk, don't fret! "}
-              {"Your browser will remember your squares so you can keep going for walks until you get a bingo."}</p></li>
-            <li><p>
-              {"When you get a bingo, you'll have the option to enter your information for a prize drawing."}
-            </p></li>
-            <li><p>
-              {"If you decide to start a new board, the tiles will re-shuffle so your card will look different every time you play."}
-            </p>
-            </li>
+              <li><p>{"Go for a walk. When you see a sidewalk obstruction, tap it on the board. If you don't get a bingo in one walk, don't fret! "}
+                {"Your browser will remember your squares so you can keep going for walks until you get a bingo."}</p></li>
+              <li><p>
+                {"When you get a bingo, you'll have the option to enter your information for a prize drawing."}
+              </p></li>
+              <li><p>
+                {"If you decide to start a new board, the tiles will re-shuffle so your card will look different every time you play."}
+              </p>
+              </li>
             </ul>
+            <Form>
+              <Form.Group>
+                <Form.Check
+                  type="switch"
+                  id="share_location"
+                  label="Share the location of the obstructions I find with Oregon Walks."
+                  style={{ margin: '0px 0px 0px 4px' }}
+                />
+                <Form.Text className="text-muted" style={{ margin: '0px 0px 0px 40px' }}>
+                  Sharing the location will allow us to better advocate for obstacle-free sidewalks.
+               </Form.Text>
+              </Form.Group>
+              <Form.Check
+                type="switch"
+                id="current_location"
+                label="Always use my current location when sharing obstruction locations."
+                style={{ margin: '0px 0px 0px 4px' }}
+
+              />
+            </Form>
           </Card.Body>
         </Accordion.Collapse>
       </Card>
