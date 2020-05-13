@@ -20,19 +20,20 @@ export default function Index(): JSX.Element {
           </Accordion.Toggle>
         </Card.Header>
         <Accordion.Collapse eventKey="0">
-          <Card.Body>
-            <ul>
-              <li><p>{"Go for a walk. When you see a sidewalk obstruction, tap it on the board. If you don't get a bingo in one walk, don't fret! "}
-                {"Your browser will remember your squares so you can keep going for walks until you get a bingo."}</p></li>
-              <li><p>
-                {"When you get a bingo, you'll have the option to enter your information for a prize drawing."}
-              </p></li>
-              <li><p>
-                {"If you decide to start a new board, the tiles will re-shuffle so your card will look different every time you play."}
-              </p>
-              </li>
-            </ul>
-            <Form>
+          <div>
+            <Card.Body>
+              <ul>
+                <li><p>{"Go for a walk. When you see a sidewalk obstruction, tap it on the board. If you don't get a bingo in one walk, don't fret! "}
+                  {"Your browser will remember your squares so you can keep going for walks until you get a bingo."}</p></li>
+                <li><p>
+                  {"When you get a bingo, you'll have the option to enter your information for a prize drawing."}
+                </p></li>
+                <li><p>
+                  {"If you decide to start a new board, the tiles will re-shuffle so your card will look different every time you play."}
+                </p>
+                </li>
+              </ul>
+
               <Form.Group>
                 <Form.Check
                   type="switch"
@@ -50,42 +51,41 @@ export default function Index(): JSX.Element {
                 label="Always use my current location when sharing obstruction locations."
                 className={styles.switch}
               />
-            </Form>
-
-            <Card.Text className="text-muted">
-              <p></p>
-              <p> To add a shortcut to your homescreen:</p>
-
-            </Card.Text>
-            <Accordion>
-              <Card>
-                <Card.Header>
-                  <Accordion.Toggle as={Button} variant="light" size="sm" eventKey="0" >
-                    {'In iOS'}
-                  </Accordion.Toggle>
-                </Card.Header>
-                <Accordion.Collapse eventKey="0">
-                  <Card.Body>
-                    {'In Safari, at the bottom of the page, tap the Share button (looks like a square with an arrow pointing out the top). '}
-                    {'Tap "Add to Home Screen". The "Add to Home" dialog box will appear. Choose a name, confirm the link, then click Add.'}
-                  </Card.Body>
-                </Accordion.Collapse>
-              </Card>
-              <Card>
-                <Card.Header>
-                  <Accordion.Toggle as={Button} variant="light" size="sm" eventKey="1" >
-                    {'In Android'}
-                  </Accordion.Toggle>
-                </Card.Header>
-                <Accordion.Collapse eventKey="1">
-                  <Card.Body>
-                    {'In Chrome, tap the menu icon (3 dots in upper right-hand corner) and tap "Add to Home Screen". '}
-                    {'You’ll be able to enter a name for the shortcut and then Chrome will add it to your home screen.'}
-                  </Card.Body>
-                </Accordion.Collapse>
-              </Card>
-            </Accordion>
-          </Card.Body>
+            </Card.Body>
+            <Card.Body>
+              <Card.Text className="text-muted">
+                {'To add a shortcut to your homescreen:'}
+              </Card.Text>
+              <Accordion>
+                <Card>
+                  <Card.Header>
+                    <Accordion.Toggle as={Button} variant="light" size="sm" eventKey="0" >
+                      {'In iOS'}
+                    </Accordion.Toggle>
+                  </Card.Header>
+                  <Accordion.Collapse eventKey="0">
+                    <Card.Body>
+                      {'In Safari, at the bottom of the page, tap the Share button (looks like a square with an arrow pointing out the top). '}
+                      {'Tap "Add to Home Screen". The "Add to Home" dialog box will appear. Choose a name, confirm the link, then click Add.'}
+                    </Card.Body>
+                  </Accordion.Collapse>
+                </Card>
+                <Card>
+                  <Card.Header>
+                    <Accordion.Toggle as={Button} variant="light" size="sm" eventKey="1" >
+                      {'In Android'}
+                    </Accordion.Toggle>
+                  </Card.Header>
+                  <Accordion.Collapse eventKey="1">
+                    <Card.Body>
+                      {'In Chrome, tap the menu icon (3 dots in upper right-hand corner) and tap "Add to Home Screen". '}
+                      {'You’ll be able to enter a name for the shortcut and then Chrome will add it to your home screen.'}
+                    </Card.Body>
+                  </Accordion.Collapse>
+                </Card>
+              </Accordion>
+            </Card.Body>
+          </div>
         </Accordion.Collapse>
       </Card>
       <Card>
@@ -128,5 +128,5 @@ export default function Index(): JSX.Element {
       <Board />
     </div>
 
-  </main>;
+  </main >;
 }
