@@ -7,10 +7,12 @@ const reportAppScriptUrl =
 
 const productionSpreadsheet = "1oePSSxULfE4u1DZ2Gf91SkacNvYWXc_ZlbzEzntzlto";
 const testSpreadsheet = "1ahxdRFPvX_aZd3O3lnzT36zNTWpj0ZMF6BqxWmKXYsA";
+const testDomains = ["localhost", "yasskin.info"] as const;
+
 const currentSpreadsheet = ((): string => {
   if (typeof window === 'undefined') {
     return "";
-  } else if (location.hostname.endsWith("localhost")) {
+  } else if (testDomains.some(domain => location.hostname.endsWith(domain))) {
     return testSpreadsheet;
   } else {
     return productionSpreadsheet;
