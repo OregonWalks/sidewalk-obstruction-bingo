@@ -60,7 +60,7 @@ function LoadedBoard({ boardState }: {
 
   return <>
     {result}
-    <Card>
+    <Card className='d-print-none'>
       <Card.Header>
         <Button variant="primary" block onClick={generateBoard}>Generate a new board</Button>
       </Card.Header>
