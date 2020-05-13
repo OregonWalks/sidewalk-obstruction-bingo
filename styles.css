@@ -13,11 +13,22 @@ h1, h2, h3, h4 {
     font-family: "Montserrat", sans-serif;
 }
 
-p {
+
+
+.switchText {
+    margin: 0px 0px 0px 40px;
+}
+
+.subText {
+    margin: 0px 0px 0px 20px;
+}
+
+
+/* Same as Oregon Walks page p {
     font-family: "Roboto Slab", serif;
     font-size: 18px;
     font-weight: 300;
-}
+} */
 
 a {
     color: #0073bb;
