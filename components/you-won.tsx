@@ -56,18 +56,13 @@ export default function YouWon(): JSX.Element {
         <Form.Group>
           <Form.Control type="email" placeholder="Enter email" value={email} onChange={changeEmail} />
         </Form.Group>
-        <Form.Group controlId='email_check'>
-          <Form.Check
-            type="checkbox"
-            label="Add me to the Oregon Walks email list"
-            checked={addToList}
-            onChange={changeAddToList}
-          />
-          <Form.Text className='text-muted subText'>
+        <Form.Check type="checkbox" id='email_check'>
+          <Form.Check.Input checked={addToList} onChange={changeAddToList} />
+          <Form.Check.Label>Add me to the Oregon Walks email list</Form.Check.Label>
+          <Form.Text className='text-muted'>
             (X emails per month on average.)
-          </Form.Text>
-
-        </Form.Group>
+            </Form.Text>
+        </Form.Check>
       </Form.Group>
     </Form>
       <div className='text-right'>

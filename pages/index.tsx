@@ -50,20 +50,16 @@ export default function Index(): JSX.Element {
                 </li>
               </ul>
 
-              <Form.Group>
-                <Form.Check
-                  type="switch"
-                  id="share_location"
-                  label="Share the location of the obstructions I find with Oregon Walks."
-                  className={styles.switch}
+              <Form.Check type="switch" id="share_location" className={styles.switch}>
+                <Form.Check.Input
                   checked={sendReports}
                   disabled={config.state == "loading"}
-                  onChange={changeSendReports}
-                />
-                <Form.Text className='text-muted switchText'>
+                  onChange={changeSendReports} />
+                <Form.Check.Label>Share the location of the obstructions I find with Oregon Walks.</Form.Check.Label>
+                <Form.Text className='text-muted'>
                   Sharing the location will allow us to better advocate for obstacle-free sidewalks.
                </Form.Text>
-              </Form.Group>
+              </Form.Check>
               <Form.Check
                 type="switch"
                 id="current_location"
@@ -72,7 +68,6 @@ export default function Index(): JSX.Element {
                 checked={autoLocation && sendReports}
                 disabled={config.state == "loading" || !sendReports}
                 onChange={changeAutoLocation}
-
               />
             </Card.Body>
             <Card.Body>
@@ -130,12 +125,12 @@ export default function Index(): JSX.Element {
               {', or use the phone numbers listed below:'}</p>
 
             <p>Broken Sidewalk: <a href="tel:503-823-1711">503-823-1711</a>
-            <br/>Illegal Parking: <a href="tel:503-823-5195">503-823-5195</a>
-            <br/>Overgrown Vegetation in the Right-of-Way: <a href="tel:503-823-4489">503-823-4489</a>
-            <br/>Work Zone Concern: <a href="tel:503-823-7233">503-823-SAFE</a>
-            <br/>Street Lighting: <a href="tel:503-865-5267">503-865-5267</a>
-            <br/>A-Frame Blocking Sidewalk: <a href="tel:503-823-1711">503-823-1711</a>
-            <br/>Refuse Bins in the Right-of-Way: <a href="tel:503-823-7202">503-823-7202</a></p>
+              <br />Illegal Parking: <a href="tel:503-823-5195">503-823-5195</a>
+              <br />Overgrown Vegetation in the Right-of-Way: <a href="tel:503-823-4489">503-823-4489</a>
+              <br />Work Zone Concern: <a href="tel:503-823-7233">503-823-SAFE</a>
+              <br />Street Lighting: <a href="tel:503-865-5267">503-865-5267</a>
+              <br />A-Frame Blocking Sidewalk: <a href="tel:503-823-1711">503-823-1711</a>
+              <br />Refuse Bins in the Right-of-Way: <a href="tel:503-823-7202">503-823-7202</a></p>
           </Card.Body>
         </Accordion.Collapse>
       </Card>

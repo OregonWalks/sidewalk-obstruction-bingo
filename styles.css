@@ -5,30 +5,12 @@ main {
     margin: 0 auto;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Neucha&display=swap');
 
 h1, h2, h3, h4 {
     font-family: "Montserrat", sans-serif;
 }
-
-
-
-.switchText {
-    margin: 0px 0px 0px 40px;
-}
-
-.subText {
-    margin: 0px 0px 0px 20px;
-}
-
-
-/* Same as Oregon Walks page p {
-    font-family: "Roboto Slab", serif;
-    font-size: 18px;
-    font-weight: 300;
-} */
 
 a {
     color: #0073bb;
