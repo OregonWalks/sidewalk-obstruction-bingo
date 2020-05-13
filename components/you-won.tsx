@@ -8,6 +8,7 @@ import { RootState } from '../store';
 import { setEnteredRaffle } from '../store/configSlice';
 import style from './you-won.module.css';
 
+
 export default function YouWon(): JSX.Element {
   const dispatch = useDispatch();
 
@@ -58,10 +59,14 @@ export default function YouWon(): JSX.Element {
         <Form.Group controlId='email_check'>
           <Form.Check
             type="checkbox"
-            label="Add me to the Oregon Walks email list (Average or no more than x emails per month)"
+            label="Add me to the Oregon Walks email list"
             checked={addToList}
             onChange={changeAddToList}
           />
+          <Form.Text className='text-muted subText'>
+            (X emails per month on average.)
+          </Form.Text>
+
         </Form.Group>
       </Form.Group>
     </Form>
