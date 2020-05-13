@@ -1,12 +1,28 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
+import { useDispatch, useSelector } from 'react-redux';
 import Board from "../components/board";
+import { RootState } from '../store';
+import { setAutoLocation, setSendReports } from '../store/configSlice';
 import styles from './index.module.css';
 
 export default function Index(): JSX.Element {
+  const dispatch = useDispatch();
+  const config = useSelector((state: RootState) => state.config);
+
+  const sendReports = config.state == "ready" && !!config.sendReports;
+  const autoLocation = config.state == "ready" && !!config.autoLocation;
+
+  const changeSendReports = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setSendReports(event.target.checked));
+  }, [dispatch]);
+  const changeAutoLocation = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setAutoLocation(event.target.checked));
+  }, [dispatch]);
+
   return <main>
     <div className={styles.banner}>
       <img src="/banner.svg" alt="Sidewalk Obstruction Bingo"></img>
@@ -40,6 +56,9 @@ export default function Index(): JSX.Element {
                   id="share_location"
                   label="Share the location of the obstructions I find with Oregon Walks."
                   className={styles.switch}
+                  checked={sendReports}
+                  disabled={config.state == "loading"}
+                  onChange={changeSendReports}
                 />
                 <Form.Text className='text-muted switchText'>
                   Sharing the location will allow us to better advocate for obstacle-free sidewalks.
@@ -50,6 +69,10 @@ export default function Index(): JSX.Element {
                 id="current_location"
                 label="Always use my current location when sharing obstruction locations."
                 className={styles.switch}
+                checked={autoLocation && sendReports}
+                disabled={config.state == "loading" || !sendReports}
+                onChange={changeAutoLocation}
+
               />
             </Card.Body>
             <Card.Body>
