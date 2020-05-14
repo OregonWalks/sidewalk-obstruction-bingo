@@ -1,0 +1,14 @@
+{
+  "name": "Sidewalk Obstruction Bingo",
+  "short_name": "SOB",
+  "description": "Play Bingo with things that obstruct your path while walking. Built by Oregon Walks.",
+  "start_url": "/",
+  "display": "standalone",
+  "lang": "en-US",
+  "icons": [{
+    "src": "/oregon_walks_logo.png",
+    "sizes": "100x82"
+  }],
+  "background_color": "#fff",
+  "theme_color": "#F4C823"
+}

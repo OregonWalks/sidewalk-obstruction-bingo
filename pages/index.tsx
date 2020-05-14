@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import React, { useCallback } from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import Button from 'react-bootstrap/Button';
@@ -24,6 +25,13 @@ export default function Index(): JSX.Element {
   }, [dispatch]);
 
   return <main>
+    <Head>
+      <title>Sidewalk Obstruction Bingo</title>
+      <link rel="manifest" href="/manifest.webmanifest" />
+      <link rel="apple-touch-icon" href="/oregon_walks_logo.png" />
+      <meta name="theme-color" content="#F4C823" />
+    </Head>
+
     <div className={styles.banner}>
       <img src="/banner.svg" alt="Sidewalk Obstruction Bingo"></img>
     </div>
