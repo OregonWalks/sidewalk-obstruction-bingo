@@ -7,7 +7,10 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start",
+    "preexport": "npm run build",
+    "export": "next export",
+    "prestart": "npm run export",
+    "start": "serve out",
     "test": "jest --watch",
     "test:ci": "jest --ci",
     "testonce": "jest"
@@ -20,6 +23,7 @@
     "bootstrap": "^4.5.0",
     "idb": "^5.0.3",
     "next": "^9.4.0",
+    "next-offline": "^5.0.2",
     "pushid": "^1.0.0",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
@@ -43,6 +47,7 @@
     "fake-indexeddb": "^3.0.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^25.5.4",
+    "serve": "^11.3.0",
     "ts-jest": "^25.5.1",
     "typescript": "^3.9.2"
   },

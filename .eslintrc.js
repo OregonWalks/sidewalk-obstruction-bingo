@@ -24,6 +24,8 @@ module.exports = {
     "*.gif",
     "*.svg",
     "node_modules/",
+    "out/",
+    "next.config.js",
   ],
   plugins: [
     'react',
