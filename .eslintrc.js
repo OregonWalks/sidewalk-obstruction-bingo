@@ -23,6 +23,8 @@ module.exports = {
     "*.css",
     "*.gif",
     "*.svg",
+    "*.png",
+    "manifest.webmanifest",
     "node_modules/",
     "out/",
     "next.config.js",
