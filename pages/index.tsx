@@ -28,7 +28,7 @@ export default function Index(): JSX.Element {
     <Head>
       <title>Sidewalk Obstruction Bingo</title>
       <link rel="manifest" href="/manifest.webmanifest" />
-      <link rel="apple-touch-icon" href="/oregon_walks_logo.png" />
+      <link rel="apple-touch-icon" href="/Logo_192.png" />
       <meta name="theme-color" content="#F4C823" />
     </Head>
 
