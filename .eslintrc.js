@@ -24,6 +24,7 @@ module.exports = {
     "*.gif",
     "*.svg",
     "*.png",
+    "*.ico",
     "manifest.webmanifest",
     "node_modules/",
     "out/",
