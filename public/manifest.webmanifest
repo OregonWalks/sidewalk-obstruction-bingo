@@ -5,10 +5,16 @@
   "start_url": "/",
   "display": "standalone",
   "lang": "en-US",
-  "icons": [{
-    "src": "/oregon_walks_logo.png",
-    "sizes": "100x82"
-  }],
+  "icons": [
+    {
+      "src": "/splash_page.png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "/Logo_192.png",
+      "sizes": "192x192"
+    }
+  ],
   "background_color": "#fff",
   "theme_color": "#F4C823"
 }
