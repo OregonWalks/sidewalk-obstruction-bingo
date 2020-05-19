@@ -38,7 +38,7 @@ export default function Index(): JSX.Element {
     </div>
 
     <Accordion>
-      <Card>
+      <Card className='d-print-none'>
         <Card.Header>
           <Accordion.Toggle as={Button} variant="primary" eventKey="0" block>
             How to Play
