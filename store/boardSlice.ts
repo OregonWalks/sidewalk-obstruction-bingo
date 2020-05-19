@@ -1,7 +1,6 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { SobDB } from '../services/db-schema';
-import { DbState } from './dbSlice';
-
+import createAsyncAction from './createAsyncAction';
 
 export interface MatchDetails {
   match: boolean;
@@ -62,9 +61,9 @@ async function doGenerateNewBoard(db: SobDB): Promise<TilesState> {
   };
 }
 
-export const generateNewBoard = createAsyncThunk<TilesState, void, { state: { db: DbState } }>(
+export const generateNewBoard = createAsyncAction(
   'board/generateNewBoard',
-  async (_, { getState }) => {
+  async (_: undefined, getState) => {
     const { db } = getState();
     if (db.state === "loading") {
       throw new Error("Database isn't initialized yet.");
@@ -81,9 +80,9 @@ type MatchToggleDetails = { tileIndex: number } & ({
   details?: string;
 });
 
-export const matchToggled = createAsyncThunk<MatchToggleDetails, MatchToggleDetails, { state: { db: DbState } }>(
+export const matchToggled = createAsyncAction(
   'board/matchToggled',
-  async (matchDetails: MatchToggleDetails, { getState }): Promise<MatchToggleDetails> => {
+  async (matchDetails: MatchToggleDetails, getState): Promise<MatchToggleDetails> => {
     const { db } = getState();
     if (db.state === "loading") {
       throw new Error("Database isn't initialized yet.");

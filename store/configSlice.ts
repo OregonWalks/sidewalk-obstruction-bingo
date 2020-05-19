@@ -1,6 +1,6 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { SobDB } from '../services/db-schema';
-import { DbState } from './dbSlice';
+import createAsyncAction from './createAsyncAction';
 
 type ConfigState = {
   state: "loading";
@@ -19,9 +19,9 @@ interface ConfigLoadedPayload {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function setBoolean(actionName: string, dbName: string) {
-  return createAsyncThunk<boolean, boolean, { state: { db: DbState } }>(
+  return createAsyncAction(
     `config/${actionName}`,
-    async (value: boolean, { getState }): Promise<boolean> => {
+    async (value: boolean, getState): Promise<boolean> => {
       const { db } = getState();
       if (db.state === "loading") {
         throw new Error("Database isn't initialized yet.");
@@ -34,7 +34,20 @@ function setBoolean(actionName: string, dbName: string) {
     });
 }
 
-export const setSendReports = setBoolean("sendReports", "send-reports");
+export const setSendReportsOrig = setBoolean("sendReports", "send-reports");
+export const setSendReports = createAsyncAction(
+  `config/sendReports`,
+  async (value: boolean, getState): Promise<boolean> => {
+    const { db } = getState();
+    if (db.state === "loading") {
+      throw new Error("Database isn't initialized yet.");
+    }
+    const tx = db.db.transaction("keyval", "readwrite");
+    tx.store.put(value, "send-reports");
+    await tx.done;
+
+    return value;
+  });
 export const setAutoLocation = setBoolean("autoLocation", "auto-location");
 export const setEnteredRaffle = setBoolean("enteredRaffle", "entered-raffle");
 
