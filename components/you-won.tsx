@@ -2,10 +2,10 @@ import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'reac
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
+import Spinner from 'react-bootstrap/Spinner';
 import { useDispatch, useSelector } from 'react-redux';
-import { enterRaffle } from '../services/report';
 import { RootState } from '../store';
-import { setEnteredRaffle } from '../store/configSlice';
+import { submittedRaffleEntry } from '../store/configSlice';
 import style from './you-won.module.css';
 
 
@@ -24,13 +24,8 @@ export default function YouWon(): JSX.Element {
 
   const enteredRaffle = useSelector((state: RootState) =>
     state.config.state === "ready" && state.config.enteredRaffle);
-  const clickEnterRaffle = useCallback(async () => {
-    try {
-      await enterRaffle(email, addToList);
-      dispatch(setEnteredRaffle(true));
-    } catch (e) {
-      console.error(e);
-    }
+  const clickEnterRaffle = useCallback(() => {
+    dispatch(submittedRaffleEntry({ email, addToList }));
   }, [addToList, dispatch, email]);
 
   const youWonImg = useRef<HTMLImageElement>(null);
@@ -45,14 +40,14 @@ export default function YouWon(): JSX.Element {
   }, []);
 
   let raffleCardBody: ReactNode = null;
-  if (enteredRaffle) {
+  if (enteredRaffle === "yes") {
     raffleCardBody = <Card.Body>
       Thank you for entering the raffle!
     </Card.Body>;
   } else {
-    raffleCardBody = <Card.Body><Form>
-      <Form.Group><Form.Label>Would you like to be entered for a prize?
-</Form.Label>
+    raffleCardBody = <Card.Body>
+      <Form>
+        {'Would you like to be entered for a prize?'}
         <Form.Group>
           <Form.Control type="email" placeholder="Enter email" value={email} onChange={changeEmail} />
         </Form.Group>
@@ -60,13 +55,18 @@ export default function YouWon(): JSX.Element {
           <Form.Check.Input checked={addToList} onChange={changeAddToList} />
           <Form.Check.Label>Add me to the Oregon Walks email list</Form.Check.Label>
           <Form.Text className='text-muted'>
-            (X emails per month on average.)
-            </Form.Text>
+            {'(X emails per month on average.)'}
+          </Form.Text>
         </Form.Check>
-      </Form.Group>
-    </Form>
+      </Form>
       <div className='text-right'>
-        <Button variant='warning' size='sm' onClick={clickEnterRaffle}>Submit</Button>
+        <Button variant='warning' size='sm' onClick={clickEnterRaffle} disabled={enteredRaffle === "entering"}>
+          {enteredRaffle === "entering" ?
+            <Spinner animation="border" role="status">
+              <span className="sr-only">Submitting...</span>
+            </Spinner>
+            : "Submit"}
+        </Button>
       </div>
     </Card.Body>;
   }
