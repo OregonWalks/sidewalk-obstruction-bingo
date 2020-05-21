@@ -34,20 +34,7 @@ function setBoolean(actionName: string, dbName: string) {
     });
 }
 
-export const setSendReportsOrig = setBoolean("sendReports", "send-reports");
-export const setSendReports = createAsyncAction(
-  `config/sendReports`,
-  async (value: boolean, getState): Promise<boolean> => {
-    const { db } = getState();
-    if (db.state === "loading") {
-      throw new Error("Database isn't initialized yet.");
-    }
-    const tx = db.db.transaction("keyval", "readwrite");
-    tx.store.put(value, "send-reports");
-    await tx.done;
-
-    return value;
-  });
+export const setSendReports = setBoolean("sendReports", "send-reports");
 export const setAutoLocation = setBoolean("autoLocation", "auto-location");
 export const setEnteredRaffle = setBoolean("enteredRaffle", "entered-raffle");
 
