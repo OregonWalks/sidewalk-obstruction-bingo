@@ -16,3 +16,7 @@ a {
     color: #0073bb;
     text-decoration: none;
 }
+
+.custom-switch {
+  margin-left: 4px;
+}
