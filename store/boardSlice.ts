@@ -1,4 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '.';
+import { wonBingo } from '../services/bingo';
 import { SobDB } from '../services/db-schema';
 import createAsyncAction from './createAsyncAction';
 
@@ -192,3 +194,11 @@ export async function loadBoard(db: SobDB): Promise<PayloadAction<TilesState>> {
 export const { tilePendingClickResolution, tileClickCancelled, loaded: boardLoadedForTest } = board.actions;
 
 export default board.reducer;
+
+export const wonSelector = createSelector(
+  (state: RootState) => state.board,
+  (board): boolean => {
+    if (board.isLoading) return false;
+    return wonBingo(board.matched.map(matchDetails => matchDetails.match));
+  }
+);

@@ -1,10 +1,15 @@
 import Head from 'next/head';
 import React from 'react';
+import Collapse from 'react-bootstrap/Collapse';
+import { useSelector } from 'react-redux';
 import Board from "../components/board";
 import InstructionsAccordion from '../components/instructions-accordion';
+import { wonSelector } from '../store/boardSlice';
 import styles from './index.module.css';
 
 export default function Index(): JSX.Element {
+  const won = useSelector(wonSelector);
+
   return <main>
     <Head>
       <title>Sidewalk Obstruction Bingo</title>
@@ -18,7 +23,9 @@ export default function Index(): JSX.Element {
       <img src="/banner.svg" alt="Sidewalk Obstruction Bingo"></img>
     </div>
 
-    <InstructionsAccordion />
+    <Collapse in={!won}>
+      <InstructionsAccordion />
+    </Collapse>
 
     <div>
       <Board />

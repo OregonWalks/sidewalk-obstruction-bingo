@@ -1,21 +1,11 @@
-import { createSelector } from '@reduxjs/toolkit';
 import React, { useCallback } from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { useDispatch, useSelector } from 'react-redux';
-import { wonBingo } from "../services/bingo";
 import { RootState } from '../store';
-import { generateNewBoard, TilesState } from '../store/boardSlice';
+import { generateNewBoard, TilesState, wonSelector } from '../store/boardSlice';
 import Tile from "./tile";
 import YouWon from './you-won';
-
-const wonSelector = createSelector(
-  (state: RootState) => state.board,
-  (board): boolean => {
-    if (board.isLoading) return false;
-    return wonBingo(board.matched.map(matchDetails => matchDetails.match));
-  }
-);
 
 export default function BoardOrLoading(): JSX.Element {
   const { db, board, config } = useSelector((state: RootState) => state);
