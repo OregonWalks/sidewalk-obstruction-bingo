@@ -23,9 +23,9 @@ export default function Index(): JSX.Element {
       <img src="/banner.svg" alt="Sidewalk Obstruction Bingo"></img>
     </div>
 
-    <Collapse in={!won}>
+    <Collapse in={!won}><div>
       <InstructionsAccordion />
-    </Collapse>
+    </div></Collapse>
 
     <div>
       <Board />
