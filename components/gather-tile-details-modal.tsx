@@ -15,6 +15,20 @@ export type TileDetails = ({
   detailString?: string;
 }
 
+function detailsReadyForMarking(isAddYourOwn: boolean | undefined, details: TileDetails): boolean {
+  if (isAddYourOwn && (details.detailString === undefined || details.detailString === "")) {
+    return false;
+  }
+  return true;
+}
+
+function detailsReadyForSharing(isAddYourOwn: boolean | undefined, details: TileDetails): boolean {
+  if (!detailsReadyForMarking(isAddYourOwn, details)) {
+    return false;
+  }
+  return details.location !== undefined || details.textLocation !== "";
+}
+
 export function GatherTileDetailsModal({ tile, tileDetails, setTileDetails,
   sendReports = false,
   onReport, onDontReport, onCancel }: {
@@ -51,8 +65,12 @@ export function GatherTileDetailsModal({ tile, tileDetails, setTileDetails,
       </Form>
     </Modal.Body>
     <Modal.Footer>
-      {sendReports && <Button variant="primary" onClick={clickReport}>Share</Button>}
-      <Button variant={sendReports ? "secondary" : "primary"} onClick={onDontReport}>
+      {sendReports &&
+        <Button variant="primary" onClick={clickReport}
+          disabled={!detailsReadyForSharing(tile.isAddYourOwn, tileDetails)}
+        >Share</Button>}
+      <Button variant={sendReports ? "secondary" : "primary"} onClick={onDontReport}
+        disabled={!detailsReadyForMarking(tile.isAddYourOwn, tileDetails)}>
         {sendReports ? "Don't Share" : "Ok"}
       </Button>
       <Button variant="secondary" onClick={onCancel}>Cancel</Button>
