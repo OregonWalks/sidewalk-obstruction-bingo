@@ -211,7 +211,7 @@ export default function Tile({ tileindex, tileid, matched }: {
       if (matched.details === undefined) {
         console.error("Marked Add-Your-Own tile is missing details.");
       }
-      addYourOwnDetails = <div className={styles.addYourOwnDetails}>
+      addYourOwnDetails = <div className={styles.addYourOwnDetailsDiv}>
         <p>{matched.details}</p>
       </div>;
     }
