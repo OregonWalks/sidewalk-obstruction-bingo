@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import { useDispatch, useSelector } from 'react-redux';
+import usePosition from '../hooks/usePosition';
 import { RootState } from '../store';
 import { setAutoLocation, setSendReports } from '../store/configSlice';
 
@@ -13,6 +14,8 @@ export default function InstructionsAccordion(): JSX.Element {
 
   const sendReports = config.state == "ready" && !!config.sendReports;
   const autoLocation = config.state == "ready" && !!config.autoLocation;
+
+  const { permissionState: geolocationPermissionState } = usePosition({ requestNow: false });
 
   const changeSendReports = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setSendReports(event.target.checked));
@@ -58,7 +61,7 @@ export default function InstructionsAccordion(): JSX.Element {
               id="current_location"
               label="Always use my current location when sharing obstruction locations."
               checked={autoLocation && sendReports}
-              disabled={config.state == "loading" || !sendReports}
+              disabled={config.state === "loading" || !sendReports || geolocationPermissionState === "denied"}
               onChange={changeAutoLocation}
             />
           </Card.Body>

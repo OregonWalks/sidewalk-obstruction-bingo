@@ -1,7 +1,7 @@
 import pushid from 'pushid';
 import React, { ReactNode, useCallback, useLayoutEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCurrentPosition } from '../services/geolocation';
+import usePosition from '../hooks/usePosition';
 import { queueReport, tryUnqueueReport } from '../services/report';
 import TILES from '../services/tiles';
 import { RootState } from '../store';
@@ -84,6 +84,16 @@ export default function Tile({ tileindex, tileid, matched }: {
     setState(TileState.CANCELING_MATCH_CLICK);
   }, [])
 
+  const onPosition = useCallback((position) => {
+    setTileDetails({ ...tileDetails, textLocation: undefined, location: position.coords });
+    setState(TileState.DETAILS_COMPLETE);
+  }, [tileDetails]);
+
+  const { permissionState: geolocationPermissionState } = usePosition({
+    requestNow: state == TileState.GETTING_LOCATION,
+    onPosition
+  });
+
   // Drive the state machine:
   useLayoutEffect(() => {
     const abortController = new AbortController();
@@ -129,7 +139,7 @@ export default function Tile({ tileindex, tileid, matched }: {
       }
       case TileState.DECIDE_HOW_TO_GET_DETAILS_REPORT: {
         setReportId(pushid());
-        if (!autoLocation || tile.isAddYourOwn) {
+        if (!autoLocation || geolocationPermissionState === "denied" || tile.isAddYourOwn) {
           setState(TileState.GET_DETAILS);
         } else {
           setState(TileState.GETTING_LOCATION);
@@ -150,18 +160,7 @@ export default function Tile({ tileindex, tileid, matched }: {
         break;
       }
       case TileState.GETTING_LOCATION: {
-        // This needs to get cancelled when the tile is unmounted, but that also
-        // means it can get cancelled at arbitrary times when the Effect is
-        // re-created. So we just re-request the location every time the Effect
-        // is created. That could cause many calls to be pending at once, but
-        // they should all complete at the same time.
-        getCurrentPosition().then(coords => {
-          if (abortController.signal.aborted) {
-            return;
-          }
-          setTileDetails({ ...tileDetails, textLocation: undefined, location: coords });
-          setState(TileState.DETAILS_COMPLETE);
-        })
+        // Handled by usePosition() above.
         break;
       }
       case TileState.CANCELING_MATCH_CLICK: {
@@ -190,7 +189,7 @@ export default function Tile({ tileindex, tileid, matched }: {
     }
 
     return (): void => { abortController.abort(); };
-  }, [autoLocation, db.db, dispatch, matched.reportId, reportId, sendReports, state, tile, tileDetails, tileindex]);
+  }, [autoLocation, db.db, dispatch, geolocationPermissionState, matched.reportId, reportId, sendReports, state, tile, tileDetails, tileindex]);
 
   let resolveClickDialog: ReactNode = null;
   if (state === TileState.SHOULD_SEND_REPORT) {

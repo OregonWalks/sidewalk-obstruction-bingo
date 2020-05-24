@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { ReactNode, useCallback, useState } from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCurrentPosition } from '../services/geolocation';
+import usePosition from '../hooks/usePosition';
 import { RootState } from '../store';
 import { setAutoLocation } from '../store/configSlice';
 import { TileDetails } from './gather-tile-details-modal';
@@ -18,8 +18,6 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
   const autoLocation = useSelector((state: RootState) =>
     state.config.state === "ready" && state.config.autoLocation);
 
-  //const [geolocationError, setGeolocationError] = useState<PositionError>(null);
-
   const onChangeLocation = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setTileDetails({ ...tileDetails, textLocation: event.target.value, location: undefined })
   }, [setTileDetails, tileDetails]);
@@ -28,22 +26,21 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
     dispatch(setAutoLocation(event.target.checked));
   }, [dispatch])
 
-  const getCurrentLocation = useCallback((_event?: React.SyntheticEvent, signal?: AbortSignal) => {
-    getCurrentPosition().then(coords => {
-      if (signal?.aborted) {
-        return;
-      }
-      setTileDetails({ ...tileDetails, textLocation: undefined, location: coords })
-    });
+  const [requestLocationNow, setRequestLocationNow] = useState<boolean>(false);
+
+  const getCurrentLocation = useCallback(() => {
+    setRequestLocationNow(true);
+  }, []);
+
+  const onPosition = useCallback((position) => {
+    setRequestLocationNow(false);
+    setTileDetails({ ...tileDetails, textLocation: undefined, location: position.coords });
   }, [setTileDetails, tileDetails]);
 
-  useEffect(() => {
-    const abort = new AbortController();
-    if (autoLocation) {
-      getCurrentLocation(undefined, abort.signal);
-    }
-    return (): void => { abort.abort(); }
-  }, [autoLocation, getCurrentLocation]);
+  const { apiAvailable, permissionState, error } = usePosition({
+    requestNow: (autoLocation && !tileDetails.location) || requestLocationNow,
+    onPosition
+  });
 
   // Documentation at https://developers.google.com/maps/documentation/embed/guide#place_mode.
   const mapUrl = new URL("https://www.google.com/maps/embed/v1/place?key=AIzaSyAQ9QAtFgij7jVNf_ZelJ4eg_oq1bLt_jE");
@@ -57,26 +54,49 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
     mapUrl.searchParams.append("q", "Portland, OR");
   }
 
+  let currentLocationCard: ReactNode = null;
+  if (!apiAvailable) {
+    currentLocationCard = <Card>
+      <Card.Header>
+        {"Your browser doesn't support using your current location."}
+      </Card.Header>
+    </Card>;
+  } else if (permissionState == "denied" || (error && error.code == error.PERMISSION_DENIED)) {
+    currentLocationCard = <Card>
+      <Card.Header>
+        {"This site is denied permission to use your current location."}
+      </Card.Header>
+    </Card>;
+  } else if (error) {
+    <Card>
+      <Card.Header>
+        {"Getting your current location failed. Try again?"}
+      </Card.Header>
+    </Card>;
+  } else {
+    currentLocationCard = <Card>
+      <Card.Header>
+        <Accordion.Toggle as={Button} onClick={getCurrentLocation} variant="primary" size="sm" eventKey="0" block>
+          Use my current location
+        </Accordion.Toggle>
+      </Card.Header>
+      <Accordion.Collapse eventKey="0">
+        <Card.Body>
+          <Form.Check
+            type={"checkbox"}
+            label={"Always use my current location"}
+            checked={autoLocation}
+            onChange={onAutoLocationChange}
+          />
+        </Card.Body>
+      </Accordion.Collapse>
+    </Card>;
+  }
+
   return <>
     <p> Where did you find this obstruction?</p>
     <Accordion>
-      <Card>
-        <Card.Header>
-          <Accordion.Toggle as={Button} onClick={getCurrentLocation} variant="primary" size="sm" eventKey="0" block>
-            Use my current location
-          </Accordion.Toggle>
-        </Card.Header>
-        <Accordion.Collapse eventKey="0">
-          <Card.Body>
-            <Form.Check
-              type={"checkbox"}
-              label={"Always use my current location"}
-              checked={autoLocation}
-              onChange={onAutoLocationChange}
-            />
-          </Card.Body>
-        </Accordion.Collapse>
-      </Card>
+      {currentLocationCard}
       <Card>
         <Card.Header>
           <Accordion.Toggle as={Button} variant="primary" size="sm" eventKey="1" block>
