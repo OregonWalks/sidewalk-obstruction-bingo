@@ -5,6 +5,7 @@ import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import { useDispatch, useSelector } from 'react-redux';
 import usePosition from '../hooks/usePosition';
+import { os, userAgent } from '../services/ua';
 import { RootState } from '../store';
 import { setAutoLocation, setSendReports } from '../store/configSlice';
 
@@ -23,6 +24,19 @@ export default function InstructionsAccordion(): JSX.Element {
   const changeAutoLocation = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setAutoLocation(event.target.checked));
   }, [dispatch]);
+
+  let addToHomeScreenInstructions = "";
+  if (os() === "ios" && /safari/i.test(userAgent())) {
+    addToHomeScreenInstructions = `In Safari, at the bottom of the page, tap
+      the Share button (looks like a square with an arrow pointing out the
+      top). Tap "Add to Home Screen". The "Add to Home" dialog box will appear.
+      Choose a name, confirm the link, then click Add.`;
+  } else if (os() === "android" && /chrome/i.test(userAgent())) {
+    addToHomeScreenInstructions = `In Chrome, tap the menu icon (3 dots in
+      upper right-hand corner) and tap "Add to Home Screen". You’ll be able to
+      enter a name for the shortcut and then Chrome will add it to your home
+      screen.`;
+  }
 
   return <Accordion>
     <Card className='d-print-none'>
@@ -65,42 +79,25 @@ export default function InstructionsAccordion(): JSX.Element {
               onChange={changeAutoLocation}
             />
           </Card.Body>
-          <Card.Body>
-            <Card.Text className="text-muted">
-              {'To add a shortcut to your homescreen:'}
-            </Card.Text>
+          {addToHomeScreenInstructions &&
             <Accordion>
               <Card>
                 <Card.Header>
-                  <Accordion.Toggle as={Button} variant="light" size="sm" eventKey="0" >
-                    {'In iOS'}
+                  <Accordion.Toggle as={Button} variant="light" size="sm" block eventKey="0" >
+                    {'To add a shortcut to your homescreen'}
                   </Accordion.Toggle>
                 </Card.Header>
                 <Accordion.Collapse eventKey="0">
                   <Card.Body>
-                    {'In Safari, at the bottom of the page, tap the Share button (looks like a square with an arrow pointing out the top). '}
-                    {'Tap "Add to Home Screen". The "Add to Home" dialog box will appear. Choose a name, confirm the link, then click Add.'}
-                  </Card.Body>
-                </Accordion.Collapse>
-              </Card>
-              <Card>
-                <Card.Header>
-                  <Accordion.Toggle as={Button} variant="light" size="sm" eventKey="1" >
-                    {'In Android'}
-                  </Accordion.Toggle>
-                </Card.Header>
-                <Accordion.Collapse eventKey="1">
-                  <Card.Body>
-                    {'In Chrome, tap the menu icon (3 dots in upper right-hand corner) and tap "Add to Home Screen". '}
-                    {'You’ll be able to enter a name for the shortcut and then Chrome will add it to your home screen.'}
+                    {addToHomeScreenInstructions}
                   </Card.Body>
                 </Accordion.Collapse>
               </Card>
             </Accordion>
-          </Card.Body>
-        </div>
-      </Accordion.Collapse>
-    </Card>
+          }
+        </div >
+      </Accordion.Collapse >
+    </Card >
     <Card>
       <Card.Header>
         <Accordion.Toggle as={Button} variant="primary" eventKey="1" block>
@@ -129,5 +126,5 @@ export default function InstructionsAccordion(): JSX.Element {
         </Card.Body>
       </Accordion.Collapse>
     </Card>
-  </Accordion>;
+  </Accordion >;
 }
