@@ -55,7 +55,7 @@ export default function YouWon(): JSX.Element {
           <Form.Check.Input checked={addToList} onChange={changeAddToList} />
           <Form.Check.Label>Add me to the Oregon Walks email list</Form.Check.Label>
           <Form.Text className='text-muted'>
-            {'(X emails per month on average.)'}
+            {'(About 2 emails per month.)'}
           </Form.Text>
         </Form.Check>
       </Form>
