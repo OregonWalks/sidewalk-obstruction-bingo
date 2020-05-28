@@ -58,7 +58,7 @@ export function GatherTileDetailsModal({ tile, tileDetails, setTileDetails,
             <Form.Control
               type="input"
               placeholder="Enter obstruction"
-              value={tileDetails.detailString}
+              value={tileDetails.detailString ?? ""}
               onChange={setDetailString} />
           </Form.Group>}
         {sendReports && <GetLocation tileDetails={tileDetails} setTileDetails={setTileDetails} />}
