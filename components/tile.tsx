@@ -42,8 +42,7 @@ export default function Tile({ tileindex, tileid, matched }: {
   const [reportId, setReportId] = useState<string | undefined>(undefined);
   const [tileDetails, setTileDetails] = useState<TileDetails>({
     textLocation: "",
-    // Ensure the input element for the add-your-own details is always "controlled".
-    detailString: tile.isAddYourOwn ? "" : undefined
+    detailString: matched.details,
   });
 
   const config = useSelector((state: RootState) => state.config);
@@ -99,7 +98,7 @@ export default function Tile({ tileindex, tileid, matched }: {
   }, [dispatch]);
 
   const { permissionState: geolocationPermissionState } = usePosition({
-    requestNow: state == TileState.GETTING_LOCATION,
+    requestNow: state === TileState.GETTING_LOCATION,
     onPosition, onError
   });
 
@@ -213,14 +212,16 @@ export default function Tile({ tileindex, tileid, matched }: {
 
   let drawMatched = null;
   let addYourOwnDetails = null;
-  if (matched.match && !tile.freeSquare) {
+  if ([TileState.MATCHED, TileState.GETTING_LOCATION, TileState.DETAILS_COMPLETE].includes(state) &&
+    !tile.freeSquare) {
     drawMatched = <img alt="Marked" src="tiles/marked.svg" className={styles.markedImg} />;
     if (tile.isAddYourOwn) {
-      if (matched.details === undefined) {
+      const details = tileDetails.detailString;
+      if (details === undefined) {
         console.error("Marked Add-Your-Own tile is missing details.");
       }
       addYourOwnDetails = <div className={styles.addYourOwnDetailsDiv}>
-        <p>{matched.details}</p>
+        <p>{details}</p>
       </div>;
     }
   }
