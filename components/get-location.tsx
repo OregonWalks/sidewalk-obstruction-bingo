@@ -38,7 +38,7 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
   }, [setTileDetails, tileDetails]);
 
   const { apiAvailable, permissionState, error } = usePosition({
-    requestNow: (autoLocation && !tileDetails.location) || requestLocationNow,
+    requestNow: (autoLocation && !tileDetails.location && !tileDetails.textLocation) || requestLocationNow,
     onPosition
   });
 
