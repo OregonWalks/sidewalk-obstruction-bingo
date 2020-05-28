@@ -3,45 +3,65 @@ import { useEffect, useState } from 'react';
 export type UsePositionResult = {
   apiAvailable: boolean;
   permissionState: PermissionState;
-  lastPosition?: Position;
+  lastPosition?: Position | "searching";
   error?: PositionError;
 };
 
 export type UsePositionOptions = {
   requestNow: boolean;
   onPosition?: (pos: Position) => void;
+  onError?: (err: PositionError) => void;
 };
 
 const apiAvailable: boolean = 'navigator' in globalThis && navigator.geolocation && !!navigator.geolocation.getCurrentPosition;
+let permissionStatus: PermissionStatus | "initializing" | "unavailable" | "firstcall" = "firstcall";
+let globalPermissionState: PermissionState = "prompt";
+const permissionStatesToUpdate: Set<(ps: PermissionState) => void> = new Set();
 
-export default function usePosition({ requestNow, onPosition }: UsePositionOptions): UsePositionResult {
-  const [permissionState, setPermissionState] = useState<PermissionState>(apiAvailable ? "prompt" : "denied");
-  const [lastPosition, setLastPosition] = useState<Position | undefined>(undefined);
+function setGlobalPermissionState(state: PermissionState): void {
+  globalPermissionState = state;
+  for (const setPermissionState of permissionStatesToUpdate) {
+    setPermissionState(state);
+  }
+}
+
+async function initializePermissionStatus(): Promise<void> {
+  if (permissionStatus !== "firstcall") return;
+  if (!apiAvailable || !navigator.permissions || !navigator.permissions.query) {
+    permissionStatus = "unavailable";
+    return;
+  }
+  permissionStatus = "initializing";
+  try {
+    const status = await navigator.permissions.query({ name: "geolocation" })
+    permissionStatus = status;
+    setGlobalPermissionState(status.state);
+    status.onchange = (): void => {
+      setGlobalPermissionState(status.state);
+    };
+  } catch (error) {
+    console.error("Failed to query the geolocation permission state:", error);
+    permissionStatus = "unavailable";
+  }
+}
+
+export default function usePosition({ requestNow, onPosition, onError }: UsePositionOptions): UsePositionResult {
+  const [permissionState, setPermissionState] = useState<PermissionState>(globalPermissionState);
+  const [lastPosition, setLastPosition] = useState<Position | "searching" | undefined>(undefined);
   const [error, setError] = useState<PositionError | undefined>(undefined);
 
   // Ask for the permission state.
   useEffect(() => {
-    if (apiAvailable && navigator.permissions && navigator.permissions.query) {
-      const abortController = new AbortController();
-      navigator.permissions.query({ name: "geolocation" }).then(status => {
-        if (abortController.signal.aborted) return;
-        setPermissionState(status.state);
-        status.onchange = (): void => {
-          setPermissionState(status.state);
-          // The user had to do something to change the permission state, which
-          // might have made any errors, especially PERMISSION_DENIED, obsolete.
-          setError(undefined);
-        };
-        abortController.signal.onabort = (): void => {
-          status.onchange = null;
-        }
-      }, error => {
-        console.error("Failed to query the geolocation permission state:", error);
-      })
+    if (!apiAvailable) {
+      globalPermissionState = "denied";
+      setPermissionState(globalPermissionState);
+      return;
+    }
+    initializePermissionStatus();
+    permissionStatesToUpdate.add(setPermissionState);
 
-      return (): void => {
-        abortController.abort();
-      }
+    return (): void => {
+      permissionStatesToUpdate.delete(setPermissionState);
     }
   }, []);
 
@@ -50,6 +70,7 @@ export default function usePosition({ requestNow, onPosition }: UsePositionOptio
     if (!requestNow || !apiAvailable) return;
 
     const abortController = new AbortController();
+    setLastPosition("searching");
     navigator.geolocation.getCurrentPosition(
       position => {
         if (abortController.signal.aborted) return;
@@ -62,9 +83,12 @@ export default function usePosition({ requestNow, onPosition }: UsePositionOptio
         console.log(error);
         setError(error);
         setLastPosition(undefined);
-        if (error.code === error.PERMISSION_DENIED) {
-          // Work even if permission.query doesn't.
-          setPermissionState("denied");
+        if (onError) onError(error);
+        if (permissionStatus === "unavailable" &&
+          error.code === error.PERMISSION_DENIED) {
+          // If permission.query doesn't work, assume a single denied means this
+          // tab will deny forever.
+          setGlobalPermissionState("denied");
         }
       }, {
       maximumAge: 5000,
@@ -75,7 +99,7 @@ export default function usePosition({ requestNow, onPosition }: UsePositionOptio
     return (): void => {
       abortController.abort();
     }
-  }, [requestNow, onPosition]);
+  }, [requestNow, onPosition, onError]);
 
   return {
     apiAvailable,

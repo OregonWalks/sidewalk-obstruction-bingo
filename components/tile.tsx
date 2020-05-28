@@ -6,6 +6,7 @@ import { queueReport, tryUnqueueReport } from '../services/report';
 import TILES from '../services/tiles';
 import { RootState } from '../store';
 import { MatchDetails, matchToggled, tileClickCancelled, tilePendingClickResolution } from '../store/boardSlice';
+import { setAutoLocation } from '../store/configSlice';
 import { AskToReport } from './ask-to-report';
 import { GatherTileDetailsModal, TileDetails } from './gather-tile-details-modal';
 import styles from './tile.module.css';
@@ -82,16 +83,24 @@ export default function Tile({ tileindex, tileid, matched }: {
 
   const onCanceledTileDetails = useCallback(() => {
     setState(TileState.CANCELING_MATCH_CLICK);
-  }, [])
+  }, []);
 
   const onPosition = useCallback((position) => {
     setTileDetails({ ...tileDetails, textLocation: undefined, location: position.coords });
     setState(TileState.DETAILS_COMPLETE);
   }, [tileDetails]);
 
+  const onError = useCallback(() => {
+    // On a geolocation error, turn off autolocation for the next tile click,
+    // and don't report this obstruction.
+    setReportId(undefined);
+    dispatch(setAutoLocation(false));
+    setState(TileState.DETAILS_COMPLETE);
+  }, [dispatch]);
+
   const { permissionState: geolocationPermissionState } = usePosition({
     requestNow: state == TileState.GETTING_LOCATION,
-    onPosition
+    onPosition, onError
   });
 
   // Drive the state machine:
