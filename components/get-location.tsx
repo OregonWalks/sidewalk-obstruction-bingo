@@ -85,6 +85,7 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
           <Form.Check
             type={"checkbox"}
             label={"Always use my current location"}
+            id="enable_auto_location"
             checked={autoLocation}
             onChange={onAutoLocationChange}
           />
