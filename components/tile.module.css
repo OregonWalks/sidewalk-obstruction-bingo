@@ -21,11 +21,18 @@
      https://css-tricks.com/centering-css-complete-guide/. */
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -38%);
 }
 
 .addYourOwnDetailsDiv p {
   text-align: center;
   font-family: "Neucha", cursive;
-  line-height: initial;
+  line-height: 1;
+  font-size: 3vw;
+}
+
+@media (min-width: 600px) {
+  .addYourOwnDetailsDiv p {
+    font-size: 18px;
+  }
 }
