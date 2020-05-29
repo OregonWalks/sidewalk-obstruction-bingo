@@ -17,18 +17,15 @@
 
 .addYourOwnDetailsDiv {
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  /* Trick for vertically aligning text is from
-     https://css-tricks.com/vertically-center-multi-lined-text/. */
-  display: table;
+  /* Trick for centering text is from
+     https://css-tricks.com/centering-css-complete-guide/. */
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .addYourOwnDetailsDiv p {
-  display: table-cell;
-  vertical-align: middle;
   text-align: center;
   font-family: "Neucha", cursive;
+  line-height: initial;
 }
