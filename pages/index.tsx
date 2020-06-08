@@ -1,6 +1,8 @@
 import Head from 'next/head';
 import React from 'react';
 import Collapse from 'react-bootstrap/Collapse';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
 import { useSelector } from 'react-redux';
 import Board from "../components/board";
 import InstructionsAccordion from '../components/instructions-accordion';
@@ -30,6 +32,18 @@ export default function Index(): JSX.Element {
     <div>
       <Board />
     </div>
+
+    <Card className='d-print-none'>
+      <Card.Header>
+        <Button variant="primary" href="https://oregonwalks.org/" block> Oregon Walks </Button>
+      </Card.Header>
+    </Card>
+
+    <Card className='d-print-none'>
+      <Card.Header>
+        <Button variant="primary" href="https://donatenow.networkforgood.org/1435882" block> Donate </Button>
+      </Card.Header>
+    </Card>
 
   </main >;
 }
