@@ -27,6 +27,18 @@ jobs:
         with:
           name: static-site-${{matrix.os}}-${{matrix.node}}
           path: out
+      - name: Deploy to staging with rsync
+        uses: easingthemes/ssh-deploy@7f1c0e0111a1faab7ac49ad2561bdac24d482d74
+        if: ${{ success() &&
+          github.event_name == 'push' && github.ref == 'refs/heads/main' &&
+          matrix.os == 'ubuntu-latest' && matrix.node == '14.x' }}
+        env:
+          REMOTE_HOST: "cactus.dreamhost.com"
+          REMOTE_USER: "sidewalkbingo"
+          SSH_PRIVATE_KEY: ${{ secrets.STAGING_SSH_KEY }}
+          SOURCE: "out/"
+          TARGET: "/home/sidewalkbingo/sidewalk-obstruction-bingo-staging.yasskin.info"
+          ARGS: "-avz --delete"
       - name: Push to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         if: ${{ success() &&
