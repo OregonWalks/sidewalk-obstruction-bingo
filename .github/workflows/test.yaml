@@ -38,7 +38,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.STAGING_SSH_KEY }}
           SOURCE: "out/"
           TARGET: "/home/sidewalkbingo/sidewalk-obstruction-bingo-staging.yasskin.info"
-          ARGS: "-avzy --no-g --delete-delay --chmod=ug=rwX,o=rX"
+          ARGS: "-avzyc --no-g --delete-delay --chmod=ug=rwX,o=rX"
       - name: Push to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         if: ${{ success() &&
