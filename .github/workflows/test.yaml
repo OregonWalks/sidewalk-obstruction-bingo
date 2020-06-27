@@ -1,5 +1,9 @@
 name: Run tests
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  release:
+    types: [released]
 
 jobs:
   buildtest:
@@ -42,10 +46,10 @@ jobs:
       - name: Push to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         if: ${{ success() &&
-          github.event_name == 'push' && github.ref == 'refs/heads/main' &&
+          github.event_name == 'release' &&
           matrix.os == 'ubuntu-latest' && matrix.node == '14.x' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./out
-          cname: sidewalk-obstruction-bingo.yasskin.info
+          cname: sidewalk-obstruction-bingo.oregonwalks.org
     #- run: npm run test:ci
