@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import React from 'react';
-import Collapse from 'react-bootstrap/Collapse';
-import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import Collapse from 'react-bootstrap/Collapse';
 import { useSelector } from 'react-redux';
 import Board from "../components/board";
 import InstructionsAccordion from '../components/instructions-accordion';
@@ -19,7 +19,7 @@ export default function Index(): JSX.Element {
       <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       <link rel="icon" type="image/x-icon" href="/favicon.ico" />
       <meta name="theme-color" content="#F4C823" />
-      <meta property="og:url" content="http://sidewalk-obstruction-bingo.oregonwalks.org" />
+      <meta property="og:url" content="https://sidewalk-obstruction-bingo.oregonwalks.org" />
       <meta property="og:type" content="website" />
       <meta property="og:title" content="Sidewalk Obstruction Bingo" />
       <meta property="og:description" content="Go for a walk. When you see a sidewalk obstruction, tap it on the board. Choose whether or not to report the location of obstructions you find." />
