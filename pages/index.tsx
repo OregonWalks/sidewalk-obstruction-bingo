@@ -19,16 +19,16 @@ export default function Index(): JSX.Element {
       <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       <link rel="icon" type="image/x-icon" href="/favicon.ico" />
       <meta name="theme-color" content="#F4C823" />
-      <meta property="og:url" content="/" />
+      <meta property="og:url" content="https://sidewalk-obstruction-bingo.oregonwalks.org" />
       <meta property="og:type" content="website" />
       <meta property="og:title" content="Sidewalk Obstruction Bingo" />
       <meta property="og:description" content="Go for a walk. When you see a sidewalk obstruction, tap it on the board. Choose whether or not to report the location of obstructions you find." />
-      <meta property="og:image" content="/facebook_link.png" />
+      <meta property="og:image" content="https://sidewalk-obstruction-bingo.oregonwalks.org/facebook_link.png" />
       <meta name="twitter:card" content="summary" />
       <meta name="twitter:site" content="@OregonWalks" />
       <meta name="twitter:title" content="Sidewalk Obstruction Bingo" />
       <meta name="twitter:description" content="Go for a walk. When you see a sidewalk obstruction, tap it on the board. Choose whether or not to report the location of obstructions you find." />
-      <meta name="twitter:image" content="/twitter_link.png" />
+      <meta name="twitter:image" content="https://sidewalk-obstruction-bingo.oregonwalks.org/twitter_link.png" />
     </Head>
 
     <div className={styles.banner}>
