@@ -44,6 +44,7 @@ module.exports = {
   rules: {
     "prefer-const": ["error", {
       destructuring: "all",
-    }]
+    }],
+    "@typescript-eslint/no-use-before-define": "off"
   },
 }

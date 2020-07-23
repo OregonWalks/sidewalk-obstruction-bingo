@@ -26,66 +26,90 @@ let sendReportsTaskId = -1;
 
 function scheduleSendReports(db: SobDB): void {
   if (sendReportsTaskId === -1) {
-    sendReportsTaskId = window.setTimeout(async () => {
-      sendReportsTaskId = -1;
+    sendReportsTaskId = window.setTimeout(() => { collectAndSendReports(db); }, sendReportsDelay);
+  }
+}
 
-      const now = new Date();
-      const tx1 = db.transaction('queuedReports', 'readwrite');
-      const reports = await tx1.store.index('addTime')
-        .getAll(IDBKeyRange.upperBound(new Date(now.getTime() - minReportAgeToSend)));
+class FetchFailedError extends Error {
+  constructor(message: string, public response: Response) {
+    super(message);
+  }
+}
 
-      // Mark all the reports as last-sent now.
-      await Promise.all(reports.map(report => {
-        report.sending = now;
-        return tx1.store.put(report);
-      }));
-      const postBody = JSON.stringify(reports.map(report => {
-        // The funny type here tells Typescript that I mean to read fields
-        // that don't exist on all the possible input types. The rest will get
-        // undefined, which is what I want in the output.
-        const { uuid, type, tile, details, textLocation, latitude, longitude, accuracy } = report as FoundReport & CancelReport;
-        return { uuid, type, tile, details, textLocation, latitude, longitude, accuracy };
-      }));
+export async function collectAndSendReports(db: SobDB): Promise<void> {
+  sendReportsTaskId = -1;
 
-      // Explicitly close the transaction before the fetch, so it's not
-      // ambiguous whether it closes during the fetch.
-      await tx1.done;
+  const now = new Date();
+  const tx1 = db.transaction('queuedReports', 'readwrite');
+  const reports = await tx1.store.index('addTime')
+    .getAll(IDBKeyRange.upperBound(new Date(now.getTime() - minReportAgeToSend)));
 
-      const reportTarget = new URL(reportAppScriptUrl);
-      reportTarget.searchParams.append("sheet", currentSpreadsheet);
-      reportTarget.searchParams.append("action", "obstruction");
-      const req = new Request(reportTarget.href, {
-        method: "POST",
-        headers: new Headers({
-          // Avoid a CORS preflight:
-          'Content-Type': 'text/plain',
-        }),
-        body: postBody,
-        credentials: "omit",
-        referrerPolicy: "origin",
-      });
-      const response = await fetch(req);
-      if (!response.ok) {
-        console.error("Failed to send report:", response);
-        return;
-      }
+  if (reports.length > 0) {
+    // Mark all the reports as last-sent now.
+    await Promise.all(reports.map(report => {
+      report.sending = now;
+      return tx1.store.put(report);
+    }));
+    const postBody = JSON.stringify(reports.map(report => {
+      // The funny type here tells Typescript that I mean to read fields
+      // that don't exist on all the possible input types. The rest will get
+      // undefined, which is what I want in the output.
+      const { uuid, type, tile, details, textLocation, latitude, longitude, accuracy } = report as FoundReport & CancelReport;
+      return { uuid, type, tile, details, textLocation, latitude, longitude, accuracy };
+    }));
 
-      const { written, debugLog, error }: { written: string[]; debugLog: unknown[]; error: object } = await response.json();
+    // Explicitly close the transaction before the fetch, so it's not
+    // ambiguous whether it closes during the fetch.
+    await tx1.done;
+
+    let written: string[];
+    try {
+      const { written: scopedWritten, debugLog, error } = await sendReports(postBody);
+      written = scopedWritten;
       if (error) {
         console.error('Server error:', error);
       }
       if (debugLog) {
         console.log('Server debug log:', debugLog);
       }
-
-      const tx2 = db.transaction('queuedReports', 'readwrite');
-      await Promise.all(written.map(uuid => tx2.store.delete(uuid)));
-      if ((await tx2.store.count()) > 0) {
-        scheduleSendReports(db);
+    } catch (e) {
+      if (e instanceof FetchFailedError) {
+        console.error("Failed to send report:", e.response);
+        return;
       }
-      await tx2.done;
-    }, sendReportsDelay);
+      throw e;
+    }
+
+    const tx2 = db.transaction('queuedReports', 'readwrite');
+    await Promise.all(written.map(uuid => tx2.store.delete(uuid)));
+    await tx2.done;
   }
+  if ((await db.count('queuedReports')) > 0) {
+    scheduleSendReports(db);
+  }
+}
+
+type SendReportsResult = { written: string[]; debugLog: unknown[]; error: object };
+
+async function sendReports(postBody: string): Promise<SendReportsResult> {
+  const reportTarget = new URL(reportAppScriptUrl);
+  reportTarget.searchParams.append("sheet", currentSpreadsheet);
+  reportTarget.searchParams.append("action", "obstruction");
+  const req = new Request(reportTarget.href, {
+    method: "POST",
+    headers: new Headers({
+      // Avoid a CORS preflight:
+      'Content-Type': 'text/plain',
+    }),
+    body: postBody,
+    credentials: "omit",
+    referrerPolicy: "origin",
+  });
+  const response = await fetch(req);
+  if (!response.ok) {
+    throw new FetchFailedError('Fetch failed.', response);
+  }
+  return await response.json() as SendReportsResult;
 }
 
 export async function queueReport(

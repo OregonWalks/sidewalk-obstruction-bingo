@@ -2,6 +2,7 @@ import { openDB } from 'idb';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { SobDBSchema } from '../services/db-schema';
+import { collectAndSendReports } from '../services/report';
 import { loadBoard } from '../store/boardSlice';
 import { loadConfig } from '../store/configSlice';
 import { setDb } from '../store/dbSlice';
@@ -49,6 +50,7 @@ export default function DbLoader({ initialKeyvalsForTest = undefined }: {
         loadBoard(db),
       ]);
       if (mounted) {
+        collectAndSendReports(db);
         dispatch(setDb(db));
         dispatch(configLoaded);
         dispatch(boardLoaded);
