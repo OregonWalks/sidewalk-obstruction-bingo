@@ -25,6 +25,7 @@ module.exports = {
     "*.svg",
     "*.png",
     "*.ico",
+    "README.md",
     "manifest.webmanifest",
     "node_modules/",
     "out/",
