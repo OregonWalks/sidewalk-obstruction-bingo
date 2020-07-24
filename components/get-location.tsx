@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useState } from 'react';
+import React, { ReactNode, useCallback, useRef, useState } from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
@@ -42,6 +42,18 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
     onPosition
   });
 
+  const alwaysUseLocationRef = useRef<HTMLInputElement>(null);
+  const focusAlwaysUseLocationRef = useCallback(() => {
+    console.log("Focusing", alwaysUseLocationRef.current);
+    alwaysUseLocationRef.current?.focus();
+  }, []);
+
+  const addressRef = useRef<HTMLInputElement>(null);
+  const focusAddressRef = useCallback(() => {
+    console.log("Focusing", addressRef.current);
+    addressRef.current?.focus();
+  }, []);
+
   // Documentation at https://developers.google.com/maps/documentation/embed/guide#place_mode.
   const mapUrl = new URL("https://www.google.com/maps/embed/v1/place?key=AIzaSyAQ9QAtFgij7jVNf_ZelJ4eg_oq1bLt_jE");
   if (tileDetails.location) {
@@ -80,10 +92,11 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
           Use my current location
         </Accordion.Toggle>
       </Card.Header>
-      <Accordion.Collapse eventKey="0">
+      <Accordion.Collapse eventKey="0" onEntered={focusAlwaysUseLocationRef}>
         <Card.Body>
           <Form.Check
             type={"checkbox"}
+            ref={alwaysUseLocationRef}
             label={"Always use my current location"}
             id="enable_auto_location"
             checked={autoLocation}
@@ -104,9 +117,13 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
             Enter address or landmark
           </Accordion.Toggle>
         </Card.Header>
-        <Accordion.Collapse eventKey="1">
+        <Accordion.Collapse eventKey="1" onEntered={focusAddressRef}>
           <Card.Body>
-            <Form.Control type="input" placeholder="'1234 Main St.' or 'Powell's'" value={tileDetails.textLocation ?? ""} onChange={onChangeLocation} />
+            <Form.Control type="input"
+              ref={addressRef}
+              placeholder="'1234 Main St.' or 'Powell's'"
+              value={tileDetails.textLocation ?? ""}
+              onChange={onChangeLocation} />
           </Card.Body>
         </Accordion.Collapse>
       </Card>
