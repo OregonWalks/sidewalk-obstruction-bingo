@@ -47,11 +47,9 @@ export function GatherTileDetailsModal({ tile, tileDetails, setTileDetails,
     setTileDetails({ ...tileDetails, detailString: event.target.value });
   }, [setTileDetails, tileDetails]);
 
-  const addYourOwnRef = useRef<HTMLInputElement>();
-  const onShow = useCallback(()=>{
-    if (addYourOwnRef.current) {
-      addYourOwnRef.current.focus();
-    }
+  const addYourOwnRef = useRef<HTMLInputElement>(null);
+  const onShow = useCallback(() => {
+    addYourOwnRef.current?.focus();
   }, []);
 
   return <Modal show={true} onShow={onShow} onHide={onCancel}>
