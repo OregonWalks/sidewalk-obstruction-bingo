@@ -44,13 +44,11 @@ export default function GetLocation({ tileDetails, setTileDetails }: {
 
   const alwaysUseLocationRef = useRef<HTMLInputElement>(null);
   const focusAlwaysUseLocationRef = useCallback(() => {
-    console.log("Focusing", alwaysUseLocationRef.current);
     alwaysUseLocationRef.current?.focus();
   }, []);
 
   const addressRef = useRef<HTMLInputElement>(null);
   const focusAddressRef = useCallback(() => {
-    console.log("Focusing", addressRef.current);
     addressRef.current?.focus();
   }, []);
 
