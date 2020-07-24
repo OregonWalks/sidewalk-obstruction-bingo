@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
@@ -47,7 +47,14 @@ export function GatherTileDetailsModal({ tile, tileDetails, setTileDetails,
     setTileDetails({ ...tileDetails, detailString: event.target.value });
   }, [setTileDetails, tileDetails]);
 
-  return <Modal show={true} onHide={onCancel}>
+  const addYourOwnRef = useRef<HTMLInputElement>();
+  const onShow = useCallback(()=>{
+    if (addYourOwnRef.current) {
+      addYourOwnRef.current.focus();
+    }
+  }, []);
+
+  return <Modal show={true} onShow={onShow} onHide={onCancel}>
     <Modal.Body>
       <Form>
         {tile.isAddYourOwn &&
@@ -57,6 +64,7 @@ export function GatherTileDetailsModal({ tile, tileDetails, setTileDetails,
             </Form.Label>
             <Form.Control
               type="input"
+              ref={addYourOwnRef}
               placeholder="Enter obstruction"
               value={tileDetails.detailString ?? ""}
               onChange={setDetailString} />
