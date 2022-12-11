@@ -37,7 +37,7 @@ jobs:
           github.event_name == 'push' && github.ref == 'refs/heads/main' &&
           matrix.os == 'ubuntu-latest' && matrix.node == '14.x' }}
         env:
-          REMOTE_HOST: "cactus.dreamhost.com"
+          REMOTE_HOST: "sidewalk-obstruction-bingo-staging.yasskin.info"
           REMOTE_USER: "sidewalkbingo"
           SSH_PRIVATE_KEY: ${{ secrets.STAGING_SSH_KEY }}
           SOURCE: "out/"
